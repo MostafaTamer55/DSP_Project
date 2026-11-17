@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/context/AuthContext';
+import { loadUserData, saveUserData } from '../../../lib/userData';
 import {
   SlidersHorizontal,
   X,
@@ -26,11 +27,12 @@ const INITIAL_PROFILE = {
 export const ProfilePage = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const userId = currentUser?.id;
 
   // Load saved profile or fallback to exact Figma 10 screenshot defaults
   const [profile, setProfile] = useState(() => {
     try {
-      const saved = localStorage.getItem('dsp_profile_data');
+      const saved = localStorage.getItem(`dsp_profile_data:${currentUser?.id || 'guest'}`);
       if (saved) return JSON.parse(saved);
     } catch {
       // Fallback
@@ -42,6 +44,23 @@ export const ProfilePage = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [formData, setFormData] = useState(profile);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  useEffect(() => {
+    if (!userId) return undefined;
+    let active = true;
+    loadUserData('profile')
+      .then((savedProfile) => {
+        if (!active) return;
+        if (savedProfile) {
+          setProfile(savedProfile);
+          localStorage.setItem(`dsp_profile_data:${userId}`, JSON.stringify(savedProfile));
+        }
+      })
+      .catch((error) => console.error('Failed to sync account profile:', error));
+    return () => {
+      active = false;
+    };
+  }, [userId]);
 
   // Sync formData whenever profile changes or modal opens
   useEffect(() => {
@@ -79,13 +98,14 @@ export const ProfilePage = () => {
     });
   };
 
-  const handleSaveSettings = (e) => {
+  const handleSaveSettings = async (e) => {
     e.preventDefault();
     setProfile(formData);
     try {
-      localStorage.setItem('dsp_profile_data', JSON.stringify(formData));
+      localStorage.setItem(`dsp_profile_data:${currentUser?.id || 'guest'}`, JSON.stringify(formData));
+      if (currentUser) await saveUserData('profile', formData);
     } catch (err) {
-      console.error('Failed to save profile to localStorage:', err);
+      console.error('Failed to save account profile:', err);
     }
     setSaveSuccess(true);
     setTimeout(() => {
@@ -94,10 +114,17 @@ export const ProfilePage = () => {
     }, 1200);
   };
 
-  const handleResetToDefault = () => {
+  const handleResetToDefault = async () => {
     setFormData(INITIAL_PROFILE);
     setProfile(INITIAL_PROFILE);
-    localStorage.removeItem('dsp_profile_data');
+    localStorage.removeItem(`dsp_profile_data:${currentUser?.id || 'guest'}`);
+    if (currentUser) {
+      try {
+        await saveUserData('profile', INITIAL_PROFILE);
+      } catch (error) {
+        console.error('Failed to reset account profile:', error);
+      }
+    }
     setSaveSuccess(true);
     setTimeout(() => {
       setSaveSuccess(false);
@@ -123,7 +150,10 @@ export const ProfilePage = () => {
       };
       setFormData(synced);
       setProfile(synced);
-      localStorage.setItem('dsp_profile_data', JSON.stringify(synced));
+      localStorage.setItem(`dsp_profile_data:${currentUser.id}`, JSON.stringify(synced));
+      saveUserData('profile', synced).catch((error) =>
+        console.error('Failed to sync account profile:', error),
+      );
     }
   };
 

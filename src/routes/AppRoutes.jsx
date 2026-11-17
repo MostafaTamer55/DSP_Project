@@ -13,7 +13,6 @@ import ExamLayout from '../layouts/ExamLayout';
 import LoginPage from '../features/auth/pages/LoginPage';
 import SignupPage from '../features/auth/pages/SignupPage';
 import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage';
-import VerifyOtpPage from '../features/auth/pages/VerifyOtpPage';
 import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage';
 
 // Dashboard (Figma 05)
@@ -55,7 +54,7 @@ export const AppRoutes = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/verify-otp" element={<VerifyOtpPage />} />
+        <Route path="/verify-otp" element={<Navigate to="/forgot-password" replace />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
       </Route>
 
