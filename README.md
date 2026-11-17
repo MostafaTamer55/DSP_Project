@@ -4,7 +4,7 @@ An interactive, responsive digital learning platform for **Digital Signal Proces
 
 ---
 
-## 🚀 Quick Run (تشغيل فوري)
+## 🚀 Quick Run 
 
 ### Option 1: Standalone Desktop EXE (No Node.js Required)
 1. Download or clone this repository.
