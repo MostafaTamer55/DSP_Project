@@ -1,123 +1,205 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Card, { CardBody, CardHeader, CardTitle } from '../../../components/common/Card';
 import Button from '../../../components/common/Button';
 import Badge from '../../../components/common/Badge';
-import { ArrowLeft, Terminal, Download, UploadCloud, CheckCircle } from 'lucide-react';
+import {
+  ArrowLeft,
+  Download,
+  ExternalLink,
+  FileText,
+  Video,
+  Folder,
+  UserCheck,
+  Clock,
+} from 'lucide-react';
+import { getSectionById } from '../data/mockSections';
 
 export const SectionDetailPage = () => {
-  const { sectionId } = useParams();
+  const { sectionId = '1' } = useParams();
+  const section = getSectionById(sectionId);
+
+  const [activeTab, setActiveTab] = useState('pdf'); // 'pdf' | 'video'
+
+  const primaryDownloadUrl = section.pdfDriveId
+    ? `https://drive.google.com/uc?export=download&id=${section.pdfDriveId}`
+    : '#';
+
+  const secondaryDownloadUrl = section.secondaryPdfDriveId
+    ? `https://drive.google.com/uc?export=download&id=${section.secondaryPdfDriveId}`
+    : '#';
+
+  const pdfPreviewUrl = section.pdfDriveId
+    ? `https://drive.google.com/file/d/${section.pdfDriveId}/preview`
+    : null;
+
+  const videoPreviewUrl = section.videoDriveId
+    ? `https://drive.google.com/file/d/${section.videoDriveId}/preview`
+    : null;
 
   return (
-    <div className="space-y-6">
-      {/* Dev & Figma Scope Banner */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-brand-50/70 border border-brand-200/60 rounded-xl text-xs text-brand-900">
-        <div className="flex items-center gap-2">
-          <Badge variant="brand" size="sm">Figma 07 Sections Detail</Badge>
-          <span className="font-medium">Assigned to: Developer 3 (Lectures & Sections)</span>
-        </div>
-        <span className="text-brand-700 text-[11px]">Route: <code className="bg-white px-1.5 py-0.5 rounded border border-brand-200">/sections/{sectionId || '1'}</code></span>
-      </div>
-
-      <div className="flex items-center justify-between">
-        <Link to="/sections" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900">
-          <ArrowLeft className="w-4 h-4" /> Back to Sections
+    <div className="space-y-6 pb-12">
+      {/* Breadcrumb nav & Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
+        <Link
+          to="/sections"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4 stroke-[2]" />
+          <span>Back to Sections</span>
         </Link>
-        <Button variant="outline" size="sm" icon={Download}>
-          Download Starter Code (.zip)
-        </Button>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-5">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Badge variant="brand" size="sm">Lab Session #{sectionId || '1'}</Badge>
-              <Badge variant="neutral" size="sm">Python 3.11 / NumPy</Badge>
-            </div>
-            <h2 className="text-2xl font-bold text-slate-900">
-              Lab Exercise: Fast Fourier Transform Implementation & Benchmarking
-            </h2>
-          </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          {section.driveFolderUrl && (
+            <a
+              href={section.driveFolderUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-800 inline-flex items-center gap-2 shadow-2xs transition-colors"
+            >
+              <Folder className="w-3.5 h-3.5 text-brand-600" />
+              <span>Open in Google Drive</span>
+              <ExternalLink className="w-3 h-3 text-slate-400" />
+            </a>
+          )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Problem Statement & Objectives</CardTitle>
-            </CardHeader>
-            <CardBody className="space-y-4 text-xs text-slate-600 leading-relaxed">
-              <p>
-                In this practical recitation, you will code a recursive Radix-2 Decimation-in-Time FFT algorithm from scratch without using <code className="font-mono bg-slate-100 px-1 py-0.5 rounded text-slate-800">numpy.fft.fft</code>.
-              </p>
-              <h4 className="font-bold text-slate-900 uppercase tracking-wide">Tasks:</h4>
-              <ul className="list-disc list-inside space-y-1 pl-1">
-                <li>Implement bit-reversal sorting on an input vector of length N = 2^m.</li>
-                <li>Compute the twiddle factors W_N^k and perform butterfly operations across log2(N) stages.</li>
-                <li>Compare execution time against standard DFT for N = 64, 128, 512, 1024.</li>
-              </ul>
-            </CardBody>
-          </Card>
-
-          {/* Starter Code Preview */}
-          <div className="rounded-xl bg-slate-950 text-slate-200 p-4 font-mono text-xs overflow-x-auto shadow-md border border-slate-800">
-            <div className="flex justify-between items-center pb-2 mb-2 border-b border-slate-800 text-slate-400">
-              <span>fft_student_template.py</span>
-              <span className="text-[10px] text-emerald-400">Template v1.2</span>
-            </div>
-            <pre className="leading-relaxed">
-{`import numpy as np
-
-def radix2_dit_fft(x):
-    """
-    x: 1D numpy array representing time-domain discrete signal
-    Returns: X (DFT frequency domain complex vector)
-    """
-    N = len(x)
-    if N <= 1:
-        return x
-    
-    # Even and odd index decomposition
-    even = radix2_dit_fft(x[0::2])
-    odd  = radix2_dit_fft(x[1::2])
-    
-    # Twiddle factor calculation
-    W = np.exp(-2j * np.pi * np.arange(N // 2) / N)
-    return np.concatenate([even + W * odd, even - W * odd])
-`}
-            </pre>
-          </div>
-        </div>
-
-        {/* Right Submission Panel */}
-        <div className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Assignment Submission</CardTitle>
-            </CardHeader>
-            <CardBody className="space-y-4">
-              <div className="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center hover:border-brand-400 transition-colors cursor-pointer bg-slate-50/50">
-                <UploadCloud className="w-8 h-8 text-brand-500 mx-auto mb-2" />
-                <p className="text-xs font-semibold text-slate-800">Drag & drop your code file</p>
-                <p className="text-[11px] text-slate-400 mt-1">.py, .ipynb, or .m (Max 25MB)</p>
-              </div>
-
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between text-slate-500">
-                  <span>Due Date:</span>
-                  <span className="font-semibold text-slate-900">Nov 02, 11:59 PM</span>
-                </div>
-                <div className="flex justify-between text-slate-500">
-                  <span>Grading Weight:</span>
-                  <span className="font-semibold text-slate-900">10% Course Total</span>
-                </div>
-              </div>
-
-              <Button variant="primary" className="w-full">
-                Submit Solution
-              </Button>
-            </CardBody>
-          </Card>
+          {section.pdfDriveId && (
+            <a
+              href={primaryDownloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#CCEB74] hover:bg-[#bfee50] text-[#15313C] px-4 py-2 rounded-full text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs transition-all"
+            >
+              <Download className="w-3.5 h-3.5 stroke-[2.25]" />
+              <span>Download PDF</span>
+            </a>
+          )}
         </div>
       </div>
+
+      {/* Title & Metadata Card */}
+      <div className="bg-white rounded-[24px] p-6 sm:p-7 border border-[#EAF0F2] shadow-sm">
+        <div className="flex items-center gap-2 mb-2 flex-wrap">
+          <Badge variant="brand" size="sm">SEC {section.num}</Badge>
+          <Badge variant="neutral" size="sm">{section.difficulty}</Badge>
+          <span className="text-xs text-slate-500 flex items-center gap-1 font-medium ml-1">
+            <UserCheck className="w-3.5 h-3.5 text-brand-600" /> {section.instructor}
+          </span>
+          <span className="text-xs text-slate-400 flex items-center gap-1 ml-2 font-medium">
+            <Clock className="w-3.5 h-3.5" /> {section.duration}
+          </span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+          {section.title}
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed max-w-3xl">
+          {section.description}
+        </p>
+
+        {/* Tab switchers if both PDF & Video are available */}
+        {(pdfPreviewUrl && videoPreviewUrl) && (
+          <div className="flex gap-2 mt-5 pt-4 border-t border-slate-100">
+            <button
+              type="button"
+              onClick={() => setActiveTab('pdf')}
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 transition-all cursor-pointer ${
+                activeTab === 'pdf'
+                  ? 'bg-[#15313C] text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" /> Handout PDF
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('video')}
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 transition-all cursor-pointer ${
+                activeTab === 'video'
+                  ? 'bg-[#15313C] text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              <Video className="w-3.5 h-3.5" /> Video Recitation
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Main Content Viewer (PDF or Video) */}
+      <div className="w-full bg-white/70 backdrop-blur-sm rounded-[32px] sm:rounded-[36px] border border-[#EAF0F2] shadow-[0_15px_45px_rgba(21,49,60,0.035)] p-4 sm:p-6 min-h-[600px] flex flex-col items-center">
+        {/* If PDF Tab active or only PDF exists */}
+        {(activeTab === 'pdf' || !videoPreviewUrl) && pdfPreviewUrl && (
+          <div className="w-full h-[760px] rounded-2xl overflow-hidden border border-[#EAF0F2] shadow-xs bg-white">
+            <iframe
+              src={pdfPreviewUrl}
+              title={`${section.title} PDF`}
+              className="w-full h-full border-none"
+              allow="autoplay"
+            />
+          </div>
+        )}
+
+        {/* If Video Tab active or only Video exists */}
+        {(activeTab === 'video' || !pdfPreviewUrl) && videoPreviewUrl && (
+          <div className="w-full h-[600px] rounded-2xl overflow-hidden border border-[#EAF0F2] shadow-xs bg-[#15313C]">
+            <iframe
+              src={videoPreviewUrl}
+              title={`${section.title} Video`}
+              className="w-full h-full border-none"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+            />
+          </div>
+        )}
+
+        {/* If neither preview is directly available */}
+        {!pdfPreviewUrl && !videoPreviewUrl && (
+          <div className="text-center py-20">
+            <Folder className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+            <h3 className="text-base font-bold text-slate-800">Materials on Google Drive</h3>
+            <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
+              This recitation contains practice sheets and handouts stored in the course Google Drive folder.
+            </p>
+            {section.driveFolderUrl && (
+              <a
+                href={section.driveFolderUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex items-center gap-2 bg-[#15313C] hover:bg-[#112730] text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs transition-colors"
+              >
+                <span>Open Google Drive Folder</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Secondary Files Card if available */}
+      {section.secondaryPdfDriveId && (
+        <Card>
+          <CardBody className="p-5 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-700">
+                <FileText className="w-5 h-5 stroke-[1.75]" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-slate-900">Alternative / Additional Notes</h4>
+                <p className="text-xs text-slate-500">{section.secondaryPdfFileName}</p>
+              </div>
+            </div>
+            <a
+              href={secondaryDownloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download Notes</span>
+            </a>
+          </CardBody>
+        </Card>
+      )}
     </div>
   );
 };

@@ -1,0 +1,11 @@
+{
+  "name": "dsp-launcher",
+  "version": "1.0.0",
+  "description": "DSP Learning Platform — Standalone Launcher",
+  "bin": "server.cjs",
+  "pkg": {
+    "targets": ["node18-win-x64"],
+    "assets": ["../dist/**/*"],
+    "outputPath": "../release"
+  }
+}

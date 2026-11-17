@@ -11,6 +11,8 @@ lerna-debug.log*
 # Dependencies and build outputs
 node_modules/
 dist/
+!release/dist/
+!release/dist/**
 dist-ssr/
 build/
 .cache/
@@ -22,6 +24,8 @@ vite.config.*.timestamp-*
 
 # Environment files
 .env*
+!.env.example
+!.env.example.*
 
 # Editor directories and files
 .vscode/*
