@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
-import { createResetToken } from '../utils/resetToken';
+import { supabase } from '../../../lib/supabase';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -11,9 +11,10 @@ export const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
   const [fieldError, setFieldError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [requestError, setRequestError] = useState('');
 
   // Handle email submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setFieldError('');
 
@@ -29,41 +30,21 @@ export const ForgotPasswordPage = () => {
     }
 
     setIsLoading(true);
-
-    // 1. Generate token and store state (valid for 15 minutes)
-    const tokenData = createResetToken(cleanEmail, 15);
-    const resetUrl = `${window.location.origin}/reset-password?token=${encodeURIComponent(
-      tokenData.token
-    )}&email=${encodeURIComponent(cleanEmail)}`;
-
-    // 2. Dispatch real email with clickable link to user's inbox
-    const emailPayload = {
-      _subject: 'DSP Platform - Reset Your Password',
-      _captcha: 'false',
-      _template: 'box',
-      email: cleanEmail,
-      reset_password_link: resetUrl,
-      message: `You requested a password reset for your DSP Platform account.\n\nClick the link below to set your new password:\n${resetUrl}\n\nNote: This link is valid for 15 minutes.`,
-    };
-
-    try {
-      fetch(`https://formsubmit.co/ajax/${encodeURIComponent(cleanEmail)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(emailPayload),
-      }).catch(() => {});
-    } catch {
-      // Non-blocking
-    }
-
-    // 3. Transition to "Check your email" screen
-    setTimeout(() => {
+    setRequestError('');
+    if (!supabase) {
       setIsLoading(false);
-      setStep('sent');
-    }, 450);
+      setRequestError('Account recovery is unavailable until Supabase is configured.');
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setIsLoading(false);
+    if (error) {
+      setRequestError(error.message);
+      return;
+    }
+    setStep('sent');
   };
 
   // -------------------------------------------------------------
@@ -84,6 +65,11 @@ export const ForgotPasswordPage = () => {
 
         {/* Email Form */}
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+          {requestError && (
+            <p className="text-xs text-[#E5484D] font-medium" role="alert">
+              {requestError}
+            </p>
+          )}
           <div>
             <label
               htmlFor="reset-email"

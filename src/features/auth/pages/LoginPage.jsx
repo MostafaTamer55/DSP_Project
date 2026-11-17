@@ -84,7 +84,9 @@ export const LoginPage = () => {
         <div className="mb-5 p-3.5 sm:p-4 rounded-2xl bg-[#EDF7E6] border border-[#CDEB74] flex items-center gap-3.5 animate-in fade-in duration-200">
           <CheckCircle2 className="w-5 h-5 text-[#4C7A1F] shrink-0" />
           <p className="text-xs sm:text-[13px] font-semibold text-[#15313C] leading-tight">
-            Account created successfully. Please log in.
+            {location.state?.requiresEmailConfirmation
+              ? 'Account created. Confirm your email, then log in.'
+              : 'Account created successfully. Please log in.'}
           </p>
         </div>
       )}
