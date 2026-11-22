@@ -82,13 +82,7 @@ export const SignupPage = () => {
     setIsLoading(false);
 
     if (result.success) {
-      navigate('/login', {
-        state: {
-          registered: true,
-          requiresEmailConfirmation: result.requiresEmailConfirmation,
-          email: cleanEmail,
-        },
-      });
+      navigate('/login', { state: { registered: true, email: cleanEmail } });
       return;
     }
 

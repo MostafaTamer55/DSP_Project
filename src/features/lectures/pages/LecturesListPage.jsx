@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, BookOpen, ArrowRight } from 'lucide-react';
-
-import { MOCK_LECTURES } from '../data/mockLectures';
+import { useCourse } from '../../courses/context/CourseContext';
+import { getLecturesByCourse } from '../data/mockLectures';
 
 /**
  * Lectures List Page matching Figma screen/lectures/list/default
@@ -10,17 +10,23 @@ import { MOCK_LECTURES } from '../data/mockLectures';
  * - Clean title & subtitle with sample placeholders indicator
  * - Rounded search bar & filter tabs (All, Video, PDF)
  * - 3-column lecture card grid with book icons, lecture numbers, titles, and media badges
+ * 
+ * BACKEND TEAM NOTE:
+ * When connecting real backend API, replace getLecturesByCourse with API fetch:
+ * e.g. api.get(`/lectures?course=${courseId}`)
  */
 export const LecturesListPage = () => {
+  const { currentCourse, courseId } = useCourse();
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('All'); // 'All' | 'Video' | 'PDF'
 
-  const lecturesData = MOCK_LECTURES;
+  const lecturesData = getLecturesByCourse(courseId);
 
   const filteredLectures = lecturesData.filter((lec) => {
     const matchesSearch =
       lec.number.toLowerCase().includes(search.toLowerCase()) ||
-      lec.title.toLowerCase().includes(search.toLowerCase());
+      lec.title.toLowerCase().includes(search.toLowerCase()) ||
+      (lec.description && lec.description.toLowerCase().includes(search.toLowerCase()));
 
     if (!matchesSearch) return false;
 
@@ -38,14 +44,19 @@ export const LecturesListPage = () => {
             Lectures
           </h1>
           <p className="text-xs sm:text-[13px] text-[#6B8089] mt-1.5 leading-relaxed">
-            Watch the video lectures and open the lecture PDF files.
+            Watch the video lectures and open the lecture PDF files for {currentCourse.title}.
           </p>
         </div>
 
-        {/* Top Right Sample Placeholders Badge */}
-        <div className="inline-flex items-center gap-1.5 text-xs text-[#6B8089] font-medium self-start sm:self-center">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#15313C]" />
-          <span>Sample placeholders</span>
+        {/* Top Right Course & Sample Placeholders Badge */}
+        <div className="inline-flex items-center gap-2 self-start sm:self-center">
+          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#15313C] text-white">
+            {currentCourse.code}
+          </span>
+          <div className="inline-flex items-center gap-1.5 text-xs text-[#6B8089] font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#15313C]" />
+            <span>Sample placeholders</span>
+          </div>
         </div>
       </div>
 

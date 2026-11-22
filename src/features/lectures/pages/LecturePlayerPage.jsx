@@ -17,10 +17,16 @@ import { useProgress } from '../../progress/services/progressService';
 
 /**
  * Lecture Details / Player Page matching Figma screen/lectures/details/default
+ * Features:
+ * - Breadcrumbs: Lectures / Lecture XX
+ * - Large dark video lecture card (#15313C) with central lime play button (#CCEB74)
+ * - Lecture PDF card with Preview and Download buttons
+ * - Related questions card with Open question files button
+ * - Bottom Previous and Next lecture navigation capsules
  */
 export const LecturePlayerPage = () => {
-  const { lectureId = '1' } = useParams();
-  const currentId = parseInt(lectureId, 10) || 1;
+  const { lectureId = '2' } = useParams();
+  const currentId = parseInt(lectureId, 10) || 2;
   const lecture = getLectureById(currentId);
 
   const { progressData, toggleLectureWatched } = useProgress();
@@ -29,17 +35,13 @@ export const LecturePlayerPage = () => {
   );
   const isWatched = currentLectureProgress?.status === 'watched';
 
-  // Pad lecture number for display (e.g. "Lecture 01")
+  // Pad lecture number for display (e.g. "Lecture 02")
   const currentNumberStr = lecture.number || `Lecture ${currentId.toString().padStart(2, '0')}`;
   const prevId = currentId > 1 ? currentId - 1 : null;
   const nextId = currentId < 8 ? currentId + 1 : null;
 
-  const prevLecture = prevId ? getLectureById(prevId) : null;
-  const nextLecture = nextId ? getLectureById(nextId) : null;
-
-  const downloadUrl = lecture.pdfDriveId
-    ? `https://drive.google.com/uc?export=download&id=${lecture.pdfDriveId}`
-    : '#';
+  const prevNumberStr = prevId ? `Lecture ${prevId.toString().padStart(2, '0')}` : null;
+  const nextNumberStr = nextId ? `Lecture ${nextId.toString().padStart(2, '0')}` : null;
 
   return (
     <div className="space-y-6 sm:space-y-7 pb-12">
@@ -57,10 +59,10 @@ export const LecturePlayerPage = () => {
 
           {/* Heading & Subtitle */}
           <h1 className="text-3xl sm:text-4xl font-bold text-[#15313C] tracking-tight">
-            {lecture.title}
+            Lecture title
           </h1>
-          <p className="text-xs sm:text-[13px] text-[#6B8089] mt-1.5 leading-relaxed max-w-2xl">
-            {lecture.description}
+          <p className="text-xs sm:text-[13px] text-[#6B8089] mt-1.5 leading-relaxed">
+            Optional lecture description appears here.
           </p>
         </div>
 
@@ -88,22 +90,23 @@ export const LecturePlayerPage = () => {
         </div>
       </div>
 
-      {/* 2. MAIN CONTENT GRID */}
+      {/* 2. MAIN CONTENT GRID (Case 3: No-Video vs Case 1/2: Video) */}
       {!lecture.hasVideo ? (
-        /* Case 3: No-Video / PDF-Only Details */
+        /* Case 3: No-Video / PDF-Only Details (Figma screen/lectures/details/no-video) */
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
           {/* Left Card: Lecture PDF Card */}
           <div className="bg-white rounded-[28px] sm:rounded-[32px] p-7 sm:p-9 border border-[#EAF0F2] shadow-[0_12px_35px_rgba(21,49,60,0.035)] flex flex-col justify-between min-h-[300px]">
+            {/* Top: File Icon & Meta */}
             <div>
               <div className="w-11 h-11 rounded-2xl bg-[#F1FBD2] flex items-center justify-center text-[#3D6317] mb-5">
                 <FileText className="w-5 h-5 stroke-[1.75]" />
               </div>
               <p className="text-xs font-semibold text-[#6B8089]">Lecture PDF</p>
               <h3 className="text-2xl sm:text-[28px] font-bold text-[#15313C] tracking-tight mt-1 mb-3">
-                {lecture.title}
+                Lecture title
               </h3>
               <span className="px-3 py-0.5 rounded-full text-xs font-medium bg-[#F5F8F9] border border-[#D7E0E3] text-[#3A5560]">
-                {lecture.pdfFileName || 'PDF'}
+                PDF
               </span>
             </div>
 
@@ -117,40 +120,41 @@ export const LecturePlayerPage = () => {
                 <span>Preview</span>
               </Link>
 
-              <a
-                href={downloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => alert(`Downloading slides for ${currentNumberStr}...`)}
                 className="bg-white border border-[#D7E0E3] hover:bg-slate-50 text-[#15313C] py-2.5 px-6 rounded-full text-xs font-semibold flex items-center gap-2 shadow-xs transition-colors cursor-pointer"
               >
                 <Download className="w-4 h-4 stroke-[2]" />
                 <span>Download</span>
-              </a>
+              </button>
             </div>
           </div>
 
           {/* Right Card: Related questions */}
           <div className="bg-white rounded-[28px] sm:rounded-[32px] p-7 sm:p-9 border border-[#EAF0F2] shadow-[0_12px_35px_rgba(21,49,60,0.035)] flex flex-col justify-between min-h-[300px]">
+            {/* Top Row: Icon & Title */}
             <div>
               <div className="flex items-center gap-3.5 mb-8">
                 <div className="w-11 h-11 rounded-2xl bg-[#F1FBD2] flex items-center justify-center text-[#3D6317] shrink-0">
                   <FolderArchive className="w-5 h-5 stroke-[1.75]" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold text-[#15313C] tracking-tight">
-                  Related materials
+                  Related questions
                 </h3>
               </div>
-              <p className="text-xs text-[#6B8089] leading-relaxed">
-                Sections, lab recitations, and assessment bank for this topic.
+              <p className="text-xs sm:text-[13px] text-[#6B8089] leading-relaxed">
+                Question files for this lecture.
               </p>
             </div>
 
+            {/* Action: Open question files -> */}
             <div className="mt-8">
               <Link
-                to="/sections"
+                to="/exams"
                 className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-semibold text-[#15313C] bg-white border border-[#D7E0E3] hover:bg-slate-50 shadow-xs transition-colors"
               >
-                <span>Open sections & labs</span>
+                <span>Open question files</span>
                 <ArrowRight className="w-3.5 h-3.5 stroke-[2]" />
               </Link>
             </div>
@@ -161,7 +165,7 @@ export const LecturePlayerPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Left Column (7 cols): Large Dark Video Lecture Card */}
           <div className="lg:col-span-7 bg-[#15313C] rounded-[28px] sm:rounded-[32px] p-7 sm:p-9 shadow-[0_20px_50px_rgba(21,49,60,0.16)] flex flex-col justify-between min-h-[350px] sm:min-h-[380px] relative overflow-hidden select-none">
-            {/* Top Row */}
+            {/* Top Row: Video Icon Box and Video Pill Badge */}
             <div className="flex items-center gap-3 relative z-10">
               <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-[#CCEB74]">
                 <Video className="w-5 h-5 stroke-[1.75]" />
@@ -182,7 +186,7 @@ export const LecturePlayerPage = () => {
               </Link>
             </div>
 
-            {/* Ambient glow */}
+            {/* Subtle ambient glow in bottom-left */}
             <div className="absolute -bottom-10 -left-10 w-[240px] h-[240px] bg-[#3A5560]/25 blur-[60px] rounded-full pointer-events-none" />
 
             {/* Bottom Left Content */}
@@ -195,8 +199,8 @@ export const LecturePlayerPage = () => {
               </h2>
               <p className="text-xs sm:text-[13px] text-slate-300 mt-1.5 leading-relaxed">
                 {lecture.videoType === 'external'
-                  ? 'Opens Google Drive video folder for this lecture.'
-                  : 'Plays the lecture video on the platform.'}
+                  ? 'Opens external video hosted outside the platform.'
+                  : 'Opens the video for this lecture.'}
               </p>
 
               {/* Watch Video Pill Button */}
@@ -216,6 +220,7 @@ export const LecturePlayerPage = () => {
           <div className="lg:col-span-5 flex flex-col justify-between gap-5 sm:gap-6">
             {/* Card 1: Lecture PDF */}
             <div className="bg-white rounded-[26px] p-6 sm:p-7 border border-[#EAF0F2] shadow-[0_12px_35px_rgba(21,49,60,0.035)] flex-1 flex flex-col justify-between">
+              {/* Top Row: Icon & Text */}
               <div className="flex items-start gap-3.5">
                 <div className="w-10 h-10 rounded-2xl bg-[#F1FBD2] flex items-center justify-center text-[#3D6317] shrink-0">
                   <FileText className="w-5 h-5 stroke-[1.75]" />
@@ -223,13 +228,12 @@ export const LecturePlayerPage = () => {
                 <div>
                   <p className="text-xs font-semibold text-[#6B8089]">Lecture PDF</p>
                   <h3 className="text-lg sm:text-xl font-bold text-[#15313C] tracking-tight mt-0.5">
-                    {lecture.title}
+                    Lecture title
                   </h3>
-                  <p className="text-xs text-[#6B8089] mt-0.5">{lecture.pdfFileName}</p>
                 </div>
               </div>
 
-              {/* Bottom Actions */}
+              {/* Bottom Actions: Preview & Download Buttons */}
               <div className="flex items-center gap-3 mt-6 pt-2">
                 <Link
                   to={`/lectures/${currentId}/pdf`}
@@ -239,20 +243,20 @@ export const LecturePlayerPage = () => {
                   <span>Preview</span>
                 </Link>
 
-                <a
-                  href={downloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => alert(`Downloading slides for ${currentNumberStr}...`)}
                   className="bg-white border border-[#D7E0E3] hover:bg-slate-50 text-[#15313C] py-2.5 px-5 rounded-full text-xs font-semibold flex items-center gap-2 shadow-xs transition-colors cursor-pointer"
                 >
                   <Download className="w-4 h-4 stroke-[2]" />
                   <span>Download</span>
-                </a>
+                </button>
               </div>
             </div>
 
-            {/* Card 2: Related materials */}
+            {/* Card 2: Related Questions */}
             <div className="bg-white rounded-[26px] p-6 sm:p-7 border border-[#EAF0F2] shadow-[0_12px_35px_rgba(21,49,60,0.035)] flex-1 flex flex-col justify-between">
+              {/* Top Row: Icon & Title */}
               <div>
                 <div className="flex items-center gap-3.5 mb-3">
                   <div className="w-10 h-10 rounded-2xl bg-[#F1FBD2] flex items-center justify-center text-[#3D6317] shrink-0">
@@ -263,10 +267,11 @@ export const LecturePlayerPage = () => {
                   </h3>
                 </div>
                 <p className="text-xs text-[#6B8089] leading-relaxed">
-                  Question files and practice exams for this topic.
+                  Question files for this lecture.
                 </p>
               </div>
 
+              {/* Action: Open question files -> */}
               <div className="mt-5">
                 <Link
                   to="/exams"
@@ -283,6 +288,7 @@ export const LecturePlayerPage = () => {
 
       {/* 3. BOTTOM NAVIGATION: PREVIOUS & NEXT LECTURE BARS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+        {/* Previous Lecture Capsule */}
         {prevId ? (
           <Link
             to={`/lectures/${prevId}`}
@@ -296,7 +302,7 @@ export const LecturePlayerPage = () => {
                 Previous lecture
               </span>
               <span className="block text-xs font-bold text-[#15313C] truncate">
-                {prevLecture?.number} • {prevLecture?.title}
+                {prevNumberStr} • Lecture title
               </span>
             </div>
           </Link>
@@ -312,6 +318,7 @@ export const LecturePlayerPage = () => {
           </div>
         )}
 
+        {/* Next Lecture Capsule */}
         {nextId ? (
           <Link
             to={`/lectures/${nextId}`}
@@ -322,7 +329,7 @@ export const LecturePlayerPage = () => {
                 Next lecture
               </span>
               <span className="block text-xs font-bold text-[#15313C] truncate">
-                {nextLecture?.number} • {nextLecture?.title}
+                {nextNumberStr} • Lecture title
               </span>
             </div>
             <div className="w-9 h-9 rounded-full bg-[#CCEB74] group-hover:bg-[#bfee50] text-[#15313C] flex items-center justify-center transition-colors shadow-xs shrink-0">

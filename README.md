@@ -1,95 +1,77 @@
-# 🎓 DSP Learning Platform
+# DSP Learning Platform
 
-An interactive, responsive digital learning platform for **Digital Signal Processing (DSP)** academic courses and laboratory sessions. Built with **React 19 + Vite 8 + Tailwind CSS + React Router 7 + Supabase**.
+An interactive, responsive digital learning platform for **Digital Signal Processing (DSP)** academic courses and laboratory sessions. Built with **React + Vite + Tailwind CSS + React Router**, structured for concurrent team development.
 
 ---
 
-## 🚀 Quick Run 
+## 🎨 Figma Architecture & Source of Truth
 
-### Option 1: Standalone Desktop EXE (No Node.js Required)
-1. Download or clone this repository.
-2. Double-click **`Run-DSP-Platform.bat`** (or open `release/DSP-Platform.exe`).
-3. The platform starts locally and opens your browser automatically at `http://localhost:5173`.
+The design is governed by the 12-page Figma specification:
 
-### Option 2: Development Mode (npm)
+### 1. Reference Pages (Design System — NOT website routes)
+* **00 Cover & Principles**: Visual language, brand identity, and educational ethos.
+* **01 Foundations**: Core design tokens (Indigo/Slate palette, Inter typography, 4px/8px spatial rhythm, shadows).
+* **02 Components**: Standard UI primitives (Buttons, Inputs, Cards, Badges, Tabs, Modals).
+* **03 Usage Notes**: Accessibility contrast (WCAG AA), interaction states, and responsive rules.
+
+### 2. Application Screen Pages (Implemented Routes)
+* **04 Login/Signup/Reset Password**: Five distinct auth screens (`/login`, `/signup`, `/forgot-password`, `/verify-otp`, `/reset-password`).
+* **05 Dashboard**: Student overview hub with metrics, active course progress, and upcoming deadlines (`/dashboard`).
+* **06 Lectures**: Comprehensive lecture catalog (`/lectures`) and interactive lecture player with notes (`/lectures/:lectureId`).
+* **07 Sections**: Practical recitation & MATLAB/Python laboratory catalog (`/sections`) and assignment workspace (`/sections/:sectionId`).
+* **08 Exam Bank**: Assessment repository (`/exams`), distraction-free quiz runner (`/exams/:examId`), and detailed score review (`/exams/:examId/results`).
+* **09 Progress**: Learning analytics, radar topic mastery matrix, and syllabus progress tracking (`/progress`).
+* **10 Profile/Settings**: Personal credentials, security settings, and notifications (`/settings`).
+* **11 Mobile**: Responsive viewport rules (bottom nav bar, collapsible sidebar drawer, touch targets) across all screens.
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+* **Node.js** v18+ (tested on v24)
+* **npm** v9+
+
+### Installation & Execution
 ```bash
-# 1. Install dependencies
+# Clone or navigate to the project directory
+cd "c:\DSP Platform"
+
+# Install dependencies (already installed)
 npm install
 
-# 2. Configure environment (Supabase)
-cp .env.example .env.local
-# Add your Supabase URL & Anon Key into .env.local
-
-# 3. Start local development server
+# Start Vite development server
 npm run dev
 
-# 4. Open in browser: http://localhost:5173
+# Build for production
+npm run build
 ```
 
 ---
 
-## 🗄️ Supabase Backend Setup
+## 🧭 Application Route Map
 
-The platform uses Supabase for Authentication and Progress tracking:
-
-1. Create a free project at [supabase.com](https://supabase.com).
-2. Go to **SQL Editor** and run the contents of [`supabase/schema.sql`](./supabase/schema.sql).
-3. Under **Project Settings → API Keys**, copy:
-   - `Project URL`
-   - `anon / public key`
-4. Paste them into `.env.local`:
-   ```env
-   VITE_SUPABASE_URL=https://your-project.supabase.co
-   VITE_SUPABASE_ANON_KEY=your-anon-key
-   ```
-5. In **Authentication → URL Configuration**, add `http://localhost:5173` to the Redirect URLs allowlist.
-
----
-
-## 📚 Course Content & Materials
-
-Connected directly to the official Google Drive course folders:
-- **Lectures 01 to 08**: Full lecture presentations with direct embedded PDF viewing and downloads.
-- **Sections & Labs**: MATLAB / Python lab recitations and starter code.
-- **Exam Bank**: Quizzes, practice assessments, and question files.
+| Path | Layout | Screen Name | Figma Source | Owner |
+|---|---|---|---|---|
+| `/login` | `AuthLayout` | Login Screen | Page 04 | Dev 1 |
+| `/signup` | `AuthLayout` | Registration Screen | Page 04 | Dev 1 |
+| `/forgot-password` | `AuthLayout` | Password Recovery | Page 04 | Dev 1 |
+| `/verify-otp` | `AuthLayout` | 6-Digit Verification Code | Page 04 | Dev 1 |
+| `/reset-password` | `AuthLayout` | Set New Password | Page 04 | Dev 1 |
+| `/dashboard` | `AppLayout` | Student Dashboard & Metrics | Page 05 | Dev 2 |
+| `/lectures` | `AppLayout` | Lectures Catalog & Filters | Page 06 | Dev 3 |
+| `/lectures/:lectureId` | `AppLayout` | Video Player & Interactive Notes | Page 06 | Dev 3 |
+| `/sections` | `AppLayout` | Practical Recitations & Labs | Page 07 | Dev 3 |
+| `/sections/:sectionId` | `AppLayout` | Lab Workspace & Code Starter | Page 07 | Dev 3 |
+| `/exams` | `AppLayout` | Exam Bank & Quizzes | Page 08 | Dev 4 |
+| `/exams/:examId` | `ExamLayout` | Distraction-Free Test Runner | Page 08 | Dev 4 |
+| `/exams/:examId/results` | `AppLayout` | Results & Answer Review | Page 08 | Dev 4 |
+| `/progress` | `AppLayout` | Topic Mastery & Progress Charts | Page 09 | Dev 2 |
+| `/settings` | `AppLayout` | Profile & Account Preferences | Page 10 | Dev 1 |
+| `*` | Standard | 404 Not Found | — | Shared |
 
 ---
 
-## 🗺️ Application Route Map
+## 👥 Team Collaboration Guide
 
-| Path | Screen | Description |
-|---|---|---|
-| `/login` | Login | Email & password authentication |
-| `/signup` | Registration | Create new student account |
-| `/dashboard` | Dashboard | Course overview, progress metrics, recent lectures |
-| `/lectures` | Lectures Catalog | Browse all 8 lectures with video & PDF filters |
-| `/lectures/:id` | Lecture Player | Video player & interactive slides card |
-| `/lectures/:id/pdf` | PDF Viewer | Full interactive document viewer with zoom & download |
-| `/lectures/:id/video`| Video Session | Google Drive video & lab recording sessions |
-| `/sections` | Sections | Recitations, practical labs, and assignments |
-| `/exams` | Exam Bank | Quizzes, distraction-free test runner, and results |
-| `/progress` | Learning Analytics | Topic mastery matrix & syllabus tracking |
-| `/settings` | Settings | Profile, credentials, and account preferences |
-
----
-
-## 🛠️ Scripts & Build
-
-```bash
-npm run dev        # Starts Vite dev server
-npm run build      # Builds production bundle to dist/
-npm run preview    # Previews production build
-npm run lint       # Runs Oxlint code linter
-```
-
----
-
-## 👥 Architecture & Team Structure
-
-Follows modular domain-driven feature architecture (`src/features/`):
-- `src/features/auth/`: Authentication flow
-- `src/features/dashboard/`: Student metrics & hub
-- `src/features/lectures/`: Lectures, video players, and PDF viewer
-- `src/features/sections/`: Recitation & lab workspaces
-- `src/features/exams/`: Assessment engine & exam bank
-- `src/features/progress/`: Analytics & syllabus tracking
+For detailed feature boundaries, coding standards, and step-by-step developer instructions, see [TEAM_GUIDE.md](./TEAM_GUIDE.md).

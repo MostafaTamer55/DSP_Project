@@ -14,6 +14,8 @@ export const ProgressSummary = ({
   data: propData,
   showDetailsLink = false,
   onSelectLectures,
+  onSelectSections,
+  onSelectExams,
 }) => {
   const { progressData: hookData, toggleLectureWatched } = useProgress(propData);
   const data = propData || hookData;
@@ -145,12 +147,20 @@ export const ProgressSummary = ({
         {/* COLUMN 2: Sections Progress */}
         <div className="bg-[#EFF7CD] rounded-[24px] sm:rounded-[26px] p-5 sm:p-6 shadow-[0_10px_30px_rgba(21,49,60,0.03)] border border-[#E2EEB5]/80 flex flex-col justify-between">
           <div>
-            {/* Header: Title and Black Pill Badge */}
-            <div className="flex items-center justify-between mb-4 sm:mb-5">
-              <h3 className="text-base sm:text-lg font-bold text-[#15313C] tracking-tight">
+            {/* Header: Title and Black Pill Badge (Clickable to view breakdown) */}
+            <div
+              onClick={onSelectSections}
+              className={`flex items-center justify-between mb-4 sm:mb-5 ${
+                onSelectSections
+                  ? 'cursor-pointer group hover:opacity-90 transition-opacity'
+                  : ''
+              }`}
+              title={onSelectSections ? 'Click to view Sections Progress Breakdown' : undefined}
+            >
+              <h3 className="text-base sm:text-lg font-bold text-[#15313C] tracking-tight group-hover:underline">
                 Sections Progress
               </h3>
-              <span className="px-3 sm:px-3.5 py-1 rounded-full text-xs font-semibold bg-[#15313C] text-white shadow-xs">
+              <span className="px-3 sm:px-3.5 py-1 rounded-full text-xs font-semibold bg-[#15313C] text-white shadow-xs group-hover:bg-[#1c3e4c] transition-colors">
                 {stats.sectionsCompletionBadge || '70% Completed'}
               </span>
             </div>
@@ -162,12 +172,14 @@ export const ProgressSummary = ({
                   key={sec.id || idx}
                   className="bg-white rounded-[16px] sm:rounded-[18px] px-4 sm:px-5 py-3.5 sm:py-4 flex items-center justify-between gap-3 shadow-xs border border-white/90 hover:shadow-sm transition-all"
                 >
-                  <Link
-                    to="/sections"
-                    className="text-xs sm:text-sm font-semibold text-[#15313C] hover:text-[#3A5560] transition-colors truncate"
+                  <button
+                    type="button"
+                    onClick={onSelectSections}
+                    className="text-xs sm:text-sm font-semibold text-[#15313C] hover:text-[#3A5560] transition-colors truncate text-left cursor-pointer"
+                    title="View Section Topics & Progress"
                   >
                     {sec.title}
-                  </Link>
+                  </button>
 
                   <span className="text-xs sm:text-sm font-medium text-[#6B8089] shrink-0">
                     {sec.statusText}
@@ -181,12 +193,20 @@ export const ProgressSummary = ({
         {/* COLUMN 3: Exams & Quizzes */}
         <div className="bg-[#EFF7CD] rounded-[24px] sm:rounded-[26px] p-5 sm:p-6 shadow-[0_10px_30px_rgba(21,49,60,0.03)] border border-[#E2EEB5]/80 flex flex-col justify-between">
           <div>
-            {/* Header: Title and Black Pill Badge */}
-            <div className="flex items-center justify-between mb-4 sm:mb-5">
-              <h3 className="text-base sm:text-lg font-bold text-[#15313C] tracking-tight">
+            {/* Header: Title and Black Pill Badge (Clickable to view breakdown) */}
+            <div
+              onClick={onSelectExams}
+              className={`flex items-center justify-between mb-4 sm:mb-5 ${
+                onSelectExams
+                  ? 'cursor-pointer group hover:opacity-90 transition-opacity'
+                  : ''
+              }`}
+              title={onSelectExams ? 'Click to view Exams & Quizzes Breakdown' : undefined}
+            >
+              <h3 className="text-base sm:text-lg font-bold text-[#15313C] tracking-tight group-hover:underline">
                 Exams & Quizzes
               </h3>
-              <span className="px-3 sm:px-3.5 py-1 rounded-full text-xs font-semibold bg-[#15313C] text-white shadow-xs">
+              <span className="px-3 sm:px-3.5 py-1 rounded-full text-xs font-semibold bg-[#15313C] text-white shadow-xs group-hover:bg-[#1c3e4c] transition-colors">
                 {stats.examsAvgBadge || 'Avg: 88%'}
               </span>
             </div>
@@ -198,16 +218,29 @@ export const ProgressSummary = ({
                   key={exam.id || idx}
                   className="bg-white rounded-[16px] sm:rounded-[18px] px-4 sm:px-5 py-3.5 sm:py-4 flex items-center justify-between gap-3 shadow-xs border border-white/90 hover:shadow-sm transition-all"
                 >
-                  <Link
-                    to="/exams"
-                    className="text-xs sm:text-sm font-semibold text-[#15313C] hover:text-[#3A5560] transition-colors truncate"
+                  <button
+                    type="button"
+                    onClick={() => onSelectExams && onSelectExams(exam)}
+                    className="text-xs sm:text-sm font-semibold text-[#15313C] hover:text-[#3A5560] transition-colors truncate text-left cursor-pointer"
+                    title="View Assessment Performance & Retake"
                   >
-                    {exam.title}
-                  </Link>
+                    {exam.name || exam.title}
+                  </button>
 
-                  <span className="text-xs sm:text-sm font-bold text-[#15313C] shrink-0">
-                    {exam.score}
-                  </span>
+                  <div className="shrink-0 flex items-center gap-1.5">
+                    {exam.status === 'needs_retake' && (
+                      <span className="w-2 h-2 rounded-full bg-[#D97706]" title="Needs Retake" />
+                    )}
+                    <span
+                      className={`text-xs sm:text-sm font-bold ${
+                        exam.status === 'needs_retake'
+                          ? 'text-[#D97706]'
+                          : 'text-[#15313C]'
+                      }`}
+                    >
+                      {exam.highestScore || exam.score}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>

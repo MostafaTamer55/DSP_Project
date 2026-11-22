@@ -1,4 +1,4 @@
-﻿# Logs
+# Logs
 logs
 *.log
 npm-debug.log*
@@ -6,26 +6,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-*-debug.log*
 
-# Dependencies and build outputs
-node_modules/
-dist/
-!release/dist/
-!release/dist/**
-dist-ssr/
-build/
-.cache/
-.vite/
-vite.config.*.timestamp-*
-*.tsbuildinfo
+node_modules
+dist
+dist-ssr
 *.local
-.tmp-*
-
-# Environment files
-.env*
-!.env.example
-!.env.example.*
 
 # Editor directories and files
 .vscode/*
@@ -37,8 +22,3 @@ vite.config.*.timestamp-*
 *.njsproj
 *.sln
 *.sw?
-
-# Platform-managed state
-.claude-replay.*
-/.plugins/
-/.opencode-skills/

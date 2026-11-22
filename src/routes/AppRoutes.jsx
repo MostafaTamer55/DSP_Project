@@ -13,6 +13,7 @@ import ExamLayout from '../layouts/ExamLayout';
 import LoginPage from '../features/auth/pages/LoginPage';
 import SignupPage from '../features/auth/pages/SignupPage';
 import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage';
+import VerifyOtpPage from '../features/auth/pages/VerifyOtpPage';
 import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage';
 
 // Dashboard (Figma 05)
@@ -27,6 +28,8 @@ import LecturePdfPage from '../features/lectures/pages/LecturePdfPage';
 // Sections (Figma 07)
 import SectionsListPage from '../features/sections/pages/SectionsListPage';
 import SectionDetailPage from '../features/sections/pages/SectionDetailPage';
+import SectionPdfPage from '../features/sections/pages/SectionPdfPage';
+import SectionVideoPage from '../features/sections/pages/SectionVideoPage';
 
 // Exam Bank (Figma 08)
 import ExamBankPage from '../features/exams/pages/ExamBankPage';
@@ -36,9 +39,8 @@ import ExamResultsPage from '../features/exams/pages/ExamResultsPage';
 // Progress (Figma 09)
 import ProgressPage from '../features/progress/pages/ProgressPage';
 
-// Settings & Profile (Figma 10)
+// Settings (Figma 10)
 import SettingsPage from '../features/settings/pages/SettingsPage';
-import ProfilePage from '../features/settings/pages/ProfilePage';
 
 // 404
 import NotFoundPage from '../pages/NotFoundPage';
@@ -54,7 +56,7 @@ export const AppRoutes = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/verify-otp" element={<Navigate to="/forgot-password" replace />} />
+        <Route path="/verify-otp" element={<VerifyOtpPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
       </Route>
 
@@ -73,6 +75,8 @@ export const AppRoutes = () => {
           {/* Practical Sections */}
           <Route path="/sections" element={<SectionsListPage />} />
           <Route path="/sections/:sectionId" element={<SectionDetailPage />} />
+          <Route path="/sections/:sectionId/pdf" element={<SectionPdfPage />} />
+          <Route path="/sections/:sectionId/video" element={<SectionVideoPage />} />
 
           {/* Exam Bank & Review */}
           <Route path="/exams" element={<ExamBankPage />} />
@@ -80,14 +84,13 @@ export const AppRoutes = () => {
 
           {/* Progress & Analytics */}
           <Route path="/progress" element={<ProgressPage />} />
+          <Route path="/progress/sections" element={<Navigate to="/progress?view=sections" replace />} />
+          <Route path="/progress/lectures" element={<Navigate to="/progress?view=lectures" replace />} />
+          <Route path="/progress/exams" element={<Navigate to="/progress?view=exams" replace />} />
+          <Route path="/progress/quiz-retake" element={<Navigate to="/progress?view=quiz-retake" replace />} />
 
-          {/* Profile & Settings (Figma 10) */}
-          <Route path="/profile" element={<ProfilePage />} />
+          {/* Profile & Settings */}
           <Route path="/settings" element={<SettingsPage />} />
-          <Route
-            path="/settings/change-password"
-            element={<SettingsPage defaultView="change-password" />}
-          />
         </Route>
 
         {/* Distraction-Free Exam Runner (Figma Page 08 Full-Screen Assessment) */}

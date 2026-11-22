@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Lock, Eye, EyeOff, ArrowRight, ArrowLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { validateResetToken, markTokenUsed, createResetToken } from '../utils/resetToken';
 import { useAuth } from '../context/AuthContext';
 
 export const ResetPasswordPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  const tokenParam = searchParams.get('token') || '';
   const emailParam = searchParams.get('email') || '';
 
+  // Validate token directly on mount/render
+  const initialTokenStatus = tokenParam ? validateResetToken(tokenParam) : null;
   const isInitialExpired = Boolean(
     searchParams.get('expired') === 'true' ||
-      searchParams.get('error_code') === 'otp_expired'
+      (initialTokenStatus && !initialTokenStatus.isValid && initialTokenStatus.reason === 'expired')
   );
 
   // Form State
@@ -22,17 +26,54 @@ export const ResetPasswordPage = () => {
   const [fieldErrors, setFieldErrors] = useState({});
   const [generalError, setGeneralError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isTokenExpired] = useState(isInitialExpired);
+  const [isTokenExpired, setIsTokenExpired] = useState(isInitialExpired);
+  const [isResending, setIsResending] = useState(false);
   const [isSuccess, setIsSuccess] = useState(searchParams.get('success') === 'true');
 
   const { updatePassword } = useAuth();
 
   // Handle request a new link when expired
   const handleRequestNewLink = () => {
-    navigate('/forgot-password');
+    setIsResending(true);
+    const targetEmail = emailParam || initialTokenStatus?.email || '';
+
+    if (targetEmail) {
+      // 1. Generate new reset token (15 mins)
+      const tokenData = createResetToken(targetEmail, 15);
+      const resetUrl = `${window.location.origin}/reset-password?token=${encodeURIComponent(
+        tokenData.token
+      )}&email=${encodeURIComponent(targetEmail)}`;
+
+      // 2. Dispatch real email to inbox
+      try {
+        fetch(`https://formsubmit.co/ajax/${encodeURIComponent(targetEmail)}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            _subject: 'DSP Platform - New Password Reset Link',
+            _captcha: 'false',
+            _template: 'box',
+            email: targetEmail,
+            reset_password_link: resetUrl,
+            message: `You requested a new password reset link for your DSP Platform account:\n\n${resetUrl}\n\nNote: This link is valid for 15 minutes.`,
+          }),
+        }).catch(() => {});
+      } catch {
+        // Ignore
+      }
+    }
+
+    // 3. Return to forgot password page to notify user
+    setTimeout(() => {
+      setIsResending(false);
+      navigate('/forgot-password');
+    }, 450);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setGeneralError('');
 
@@ -57,17 +98,36 @@ export const ResetPasswordPage = () => {
 
     setFieldErrors({});
 
-    setIsSubmitting(true);
-    try {
-      await updatePassword(emailParam, password);
-      setIsSuccess(true);
-    } catch (error) {
-      setGeneralError(
-        error.message || 'This password reset link is invalid or expired. Request a new link.',
-      );
-    } finally {
-      setIsSubmitting(false);
+    // Check token validity again upon submission
+    if (tokenParam) {
+      const status = validateResetToken(tokenParam);
+      if (!status.isValid) {
+        if (status.reason === 'expired') {
+          setIsTokenExpired(true);
+        } else if (status.reason === 'already_used') {
+          setGeneralError('This reset link has already been used.');
+        }
+        return;
+      }
     }
+
+    setIsSubmitting(true);
+
+    const targetEmail = emailParam || initialTokenStatus?.email || '';
+
+    // Update account password so login succeeds with new password
+    if (targetEmail) {
+      updatePassword(targetEmail, password);
+    }
+
+    // Consume token and transition to Success Screen
+    setTimeout(() => {
+      if (tokenParam) {
+        markTokenUsed(tokenParam);
+      }
+      setIsSubmitting(false);
+      setIsSuccess(true);
+    }, 500);
   };
 
   // -------------------------------------------------------------------
@@ -138,13 +198,18 @@ export const ResetPasswordPage = () => {
         {/* Request a new link Button */}
         <button
           type="button"
+          disabled={isResending}
           onClick={handleRequestNewLink}
           className="w-full bg-[#15313C] hover:bg-[#0D242D] active:scale-[0.99] text-[#CCEB74] hover:text-white font-medium text-sm py-3.5 px-6 rounded-full flex items-center justify-center gap-2 shadow-sm transition-all duration-200 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer"
         >
-          <>
-            <span className="font-semibold text-white">Request a new link</span>
-            <ArrowRight className="w-4 h-4 text-[#CCEB74] stroke-[2.2]" />
-          </>
+          {isResending ? (
+            <span className="font-semibold text-white">Sending new link...</span>
+          ) : (
+            <>
+              <span className="font-semibold text-white">Request a new link</span>
+              <ArrowRight className="w-4 h-4 text-[#CCEB74] stroke-[2.2]" />
+            </>
+          )}
         </button>
 
         {/* Back to login link */}
