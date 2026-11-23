@@ -43,19 +43,25 @@ export const PdfViewerPage = () => {
             <span className="w-9 text-center">{zoom}%</span>
             <button aria-label="Zoom in" onClick={() => setZoom((z) => Math.min(200, z + 10))} className="rounded p-1 hover:bg-slate-100"><Plus size={14} /></button>
           </div>
-          <button className="inline-flex items-center gap-1.5 rounded-full bg-lime-400 px-3.5 py-1.5 font-semibold text-slate-900 hover:bg-lime-300"><Download size={13} />Download</button>
+          <button onClick={() => { const id = file.driveId || file.id; window.open(`https://drive.google.com/uc?export=download&id=${id}`, "_blank"); }} className="inline-flex items-center gap-1.5 rounded-full bg-lime-400 px-3.5 py-1.5 font-semibold text-slate-900 hover:bg-lime-300 cursor-pointer"><Download size={13} />Download</button>
         </div>
       </div>
 
       <div className="overflow-auto rounded-2xl border border-white bg-slate-100/80 p-6 shadow-inner" style={{ minHeight: 520 }}>
         <div className="mx-auto origin-top rounded bg-white p-8 shadow-md transition-[width]" style={{ width: `${(560 * zoom) / 100}px`, maxWidth: 'none' }}>
-          {/* Replace this placeholder with <iframe src={fileUrl} /> or react-pdf <Page pageNumber={page} /> */}
-          <div className="space-y-3">
-            <div className="mx-auto h-2.5 w-1/2 rounded bg-slate-200" />
-            {[100, 92, 96, 70].map((w, i) => <div key={i} className="h-2 rounded bg-slate-100" style={{ width: `${w}%` }} />)}
-            <div className="h-28 rounded-lg bg-slate-50" />
-            {[100, 88, 95, 60, 98, 80].map((w, i) => <div key={i} className="h-2 rounded bg-slate-100" style={{ width: `${w}%` }} />)}
-          </div>
+          {file.driveId ? (
+            <iframe
+              src={`https://drive.google.com/file/d/${file.driveId}/preview`}
+              title={file.name}
+              className="w-full h-[680px] rounded-lg border-0 shadow-sm"
+              allow="autoplay"
+            />
+          ) : (
+            <div className="space-y-3 py-12 text-center">
+              <p className="font-semibold text-slate-800">{file.name}</p>
+              <p className="text-xs text-slate-500">Preview will be available soon.</p>
+            </div>
+          )}
         </div>
       </div>
     </ExamBankLayout>

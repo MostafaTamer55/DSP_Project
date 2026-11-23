@@ -2,105 +2,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Layers, ArrowRight } from 'lucide-react';
 import { useCourse } from '../../courses/context/CourseContext';
+import { getSectionsByCourse } from '../data/mockSections';
 
 /**
  * Mock data for DSP Sections
  */
-export const MOCK_DSP_SECTIONS = [
-  {
-    id: 'd1',
-    number: 'Section 01',
-    title: 'Section title',
-    hasVideo: true,
-    hasPdf: true,
-  },
-  {
-    id: 'd2',
-    number: 'Section 02',
-    title: 'Section title',
-    hasVideo: false,
-    hasPdf: true,
-  },
-  {
-    id: 'd3',
-    number: 'Section 03',
-    title: 'Section title',
-    hasVideo: true,
-    hasPdf: true,
-  },
-  {
-    id: 'd4',
-    number: 'Section 04',
-    title: 'Section title',
-    hasVideo: true,
-    hasPdf: true,
-  },
-  {
-    id: 'd5',
-    number: 'Section 05',
-    title: 'Section title',
-    hasVideo: false,
-    hasPdf: true,
-  },
-  {
-    id: 'd6',
-    number: 'Section 06',
-    title: 'Section title',
-    hasVideo: false,
-    hasPdf: true,
-  },
-];
-
-/**
- * Mock data for Signals and Systems Sections
- * BACKEND TEAM NOTE: Replace with API call e.g. api.get('/sections?course=signals')
- */
-export const MOCK_SIGNALS_SECTIONS = [
-  {
-    id: 's1',
-    number: 'Section 01',
-    title: 'Section title',
-    hasVideo: true,
-    hasPdf: true,
-  },
-  {
-    id: 's2',
-    number: 'Section 02',
-    title: 'Section title',
-    hasVideo: false,
-    hasPdf: true,
-  },
-  {
-    id: 's3',
-    number: 'Section 03',
-    title: 'Section title',
-    hasVideo: true,
-    hasPdf: true,
-  },
-  {
-    id: 's4',
-    number: 'Section 04',
-    title: 'Section title',
-    hasVideo: true,
-    hasPdf: true,
-  },
-  {
-    id: 's5',
-    number: 'Section 05',
-    title: 'Section title',
-    hasVideo: false,
-    hasPdf: true,
-  },
-  {
-    id: 's6',
-    number: 'Section 06',
-    title: 'Section title',
-    hasVideo: false,
-    hasPdf: true,
-  },
-];
-
-export const MOCK_SECTIONS = MOCK_DSP_SECTIONS;
 
 /**
  * SectionsListPage Component
@@ -117,7 +23,7 @@ export const SectionsListPage = () => {
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('All'); // 'All' | 'With video link'
 
-  const sectionsData = courseId === 'signals' ? MOCK_SIGNALS_SECTIONS : MOCK_DSP_SECTIONS;
+  const sectionsData = getSectionsByCourse(courseId);
 
   const filteredSections = sectionsData.filter((sec) => {
     const query = search.toLowerCase().trim();

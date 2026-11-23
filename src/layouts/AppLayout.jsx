@@ -21,6 +21,12 @@ export const AppLayout = () => {
   const navigate = useNavigate();
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
 
+  const handleCourseSelect = (id) => {
+    selectCourse(id);
+    navigate('/dashboard');
+  };
+
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -51,7 +57,7 @@ export const AppLayout = () => {
             <div className="bg-[#F8FAF5] rounded-full border border-[#D7E0E3] p-0.5 sm:p-1 flex items-center shadow-2xs">
               <button
                 type="button"
-                onClick={() => selectCourse('dsp')}
+                onClick={() => handleCourseSelect('dsp')}
                 className={`px-3 sm:px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                   courseId === 'dsp'
                     ? 'bg-[#15313C] text-white shadow-xs'
@@ -63,7 +69,7 @@ export const AppLayout = () => {
               </button>
               <button
                 type="button"
-                onClick={() => selectCourse('signals')}
+                onClick={() => handleCourseSelect('signals')}
                 className={`px-3 sm:px-3.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                   courseId === 'signals'
                     ? 'bg-[#15313C] text-white shadow-xs'

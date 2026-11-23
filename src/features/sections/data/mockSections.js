@@ -1,119 +1,394 @@
 /**
- * Master Practical Sections & Recitations Data
- * Connected to official Google Drive course folders.
+ * Master Practical Sections & Recitations Data for DSP and Signals & Systems
+ * Connected directly to official Google Drive course materials.
  */
-export const MOCK_SECTIONS = [
+
+export const MOCK_DSP_SECTIONS = [
   {
-    id: '1',
-    num: '01',
-    title: 'Section 01: Discrete-Time Signals & Systems Problems',
-    description: 'Classification of signals, basic operations (shifting, scaling), and LTI properties verification.',
-    env: 'PDF Handouts & Exercises',
-    duration: '1h 30m',
-    difficulty: 'Beginner',
-    instructor: 'DSP Teaching Assistants',
-    pdfDriveId: '1ELDCwy4sRzTCst6m3ZCC_BNIwJK5jzIH',
-    pdfFileName: 'Section 1.pdf',
-    driveFolderUrl: 'https://drive.google.com/drive/folders/1F1dQG23nHNlhuM0OhVtpIdqZ83HpAbiF',
+    "id": "1",
+    "num": "01",
+    "number": "Section 01",
+    "title": "Discrete-Time Signals & Systems Problems",
+    "description": "Classification of signals, basic operations (shifting, scaling, reversal), and LTI properties verification.",
+    "env": "PDF Handout & Video Session",
+    "duration": "1h 30m",
+    "difficulty": "Beginner",
+    "instructor": "DSP Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1ldqujmuLg5CbgYr_4og7Ql8aNelMnuVC",
+    "pdfFileName": "Section 1 DSP.pdf",
+    "videoDriveId": "1yDJEdzFjHLrd6N62uLseawUA-mqrOt7V",
+    "videoFileName": "Section 1 DSP.mp4",
+    "videos": [
+      {
+        "title": "Section 1 DSP Video",
+        "type": "drive",
+        "id": "1yDJEdzFjHLrd6N62uLseawUA-mqrOt7V"
+      }
+    ],
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1_ep2RWd0YsI_2s9-D0TGlXg2rufk11VI"
   },
   {
-    id: '2',
-    num: '02',
-    title: 'Section 02: Discrete Fourier Transform (DFT) Recitation',
-    description: 'Computing DFT and IDFT, frequency analysis of finite-duration sequences, and properties.',
-    env: 'PDF Handouts & Solutions',
-    duration: '2h',
-    difficulty: 'Intermediate',
-    instructor: 'DSP Teaching Assistants',
-    pdfDriveId: '1Ewwut5gZuKAqn1wOHhpwHmwALk83CN3V',
-    pdfFileName: 'Section 2 DSP.pdf',
-    driveFolderUrl: 'https://drive.google.com/drive/folders/1wIc-3ZIcyKHnECUfz-aZt-ewgprItOQq',
+    "id": "2",
+    "num": "02",
+    "number": "Section 02",
+    "title": "Discrete-Time Signals Operations & System Properties",
+    "description": "Computing discrete-time sequences, time-invariance, causality and stability problems.",
+    "env": "PDF Handout & Video Session",
+    "duration": "2h",
+    "difficulty": "Intermediate",
+    "instructor": "DSP Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1pYv25U8PsBSX9rFiCipojSkvU6wcZYhR",
+    "pdfFileName": "Section 2 DSP.pdf",
+    "videoDriveId": "1yPJql-Fz8fv5Pu6IGUvyjW8AyR5XYcgP",
+    "videoFileName": "Section 2 DSP.mp4",
+    "videos": [
+      {
+        "title": "Section 2 DSP Video",
+        "type": "drive",
+        "id": "1yPJql-Fz8fv5Pu6IGUvyjW8AyR5XYcgP"
+      }
+    ],
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1_ep2RWd0YsI_2s9-D0TGlXg2rufk11VI"
   },
   {
-    id: '3',
-    num: '03',
-    title: 'Section 03: Fast Fourier Transform (FFT) & Convolution',
-    description: 'DIT FFT butterfly computations, bit-reversal sorting, and circular convolution through FFT.',
-    env: 'Multiple Handouts & Notes',
-    duration: '2h',
-    difficulty: 'Intermediate',
-    instructor: 'Eng. Abdelhady & TAs',
-    pdfDriveId: '1EmI7BQwzF3FWoNiPc6nuOrHIMSOxE7Up',
-    pdfFileName: 'Section 3.pdf',
-    secondaryPdfDriveId: '1fxPCxKyBg1CzCoz76Diy-uIazkoD5Qbe',
-    secondaryPdfFileName: 'Section 3 DSP Eng Abdelhady.pdf',
-    driveFolderUrl: 'https://drive.google.com/drive/folders/1hSUVFufIHvz8dC7tDoxRssJ1wQD3jwAG',
+    "id": "3",
+    "num": "03",
+    "number": "Section 03",
+    "title": "Linear Convolution Sum & System Analysis",
+    "description": "Evaluating convolution sum graphically and analytically with impulse response applications.",
+    "env": "PDF Handout & Video Session",
+    "duration": "2h",
+    "difficulty": "Intermediate",
+    "instructor": "DSP Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1SgeO6FWua-jF6jaCXU15DlDB_2MfRRt7",
+    "pdfFileName": "Section 3 DSP.pdf",
+    "videoDriveId": "1G_DJx1r3-w01emcTY_gSMJuUuS2beD6Q",
+    "videoFileName": "Section 3 DSP.mp4",
+    "videos": [
+      {
+        "title": "Section 3 DSP Video",
+        "type": "drive",
+        "id": "1G_DJx1r3-w01emcTY_gSMJuUuS2beD6Q"
+      }
+    ],
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1_ep2RWd0YsI_2s9-D0TGlXg2rufk11VI"
   },
   {
-    id: '4',
-    num: '04',
-    title: 'Section 04: Z-Transform Analysis & Frequency Response',
-    description: 'ROC determination, pole-zero mapping, solving difference equations, and system stability.',
-    env: 'Video Recitation + PDF',
-    duration: '1h 45m',
-    difficulty: 'Intermediate',
-    instructor: 'DSP Teaching Assistants',
-    pdfDriveId: '1jPzkEAlnl6OzGEIa3M2DGeOdnrqJI9j1',
-    pdfFileName: 'Copy of Section 4.pdf',
-    videoDriveId: '1fdPRRLD1syeenkxAZjuTNhRVFH9HmMXo',
-    videoFileName: 'Copy of Section 4 DSP.mp4',
-    driveFolderUrl: 'https://drive.google.com/drive/folders/1HuX422d2NeCDQCOC0zHWGcrRb4XwRXv9',
+    "id": "4",
+    "num": "04",
+    "number": "Section 04",
+    "title": "Difference Equations & Frequency Response",
+    "description": "Constant coefficient difference equations solution, natural/forced response and frequency response.",
+    "env": "PDF Handout & Video Session",
+    "duration": "1h 45m",
+    "difficulty": "Intermediate",
+    "instructor": "DSP Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1X-rRabMsuYr_RimyW25aFKJqX8OdwcJQ",
+    "pdfFileName": "Section 4 DSP.pdf",
+    "videoDriveId": "1MSXjUCTfZNj8Zz7YZWM08EHBqs6-ewtB",
+    "videoFileName": "Section 4 DSP.mp4",
+    "videos": [
+      {
+        "title": "Section 4 DSP Video",
+        "type": "drive",
+        "id": "1MSXjUCTfZNj8Zz7YZWM08EHBqs6-ewtB"
+      }
+    ],
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1_ep2RWd0YsI_2s9-D0TGlXg2rufk11VI"
   },
   {
-    id: '5',
-    num: '05',
-    title: 'Section 05: FIR Filter Design via Windowing Method',
-    description: 'Designing lowpass, highpass, and bandpass FIR filters using Hamming, Hanning, and Blackman windows.',
-    env: 'Design Papers & Recitations',
-    duration: '2h 15m',
-    difficulty: 'Advanced',
-    instructor: 'DSP Teaching Assistants',
-    driveFolderUrl: 'https://drive.google.com/drive/folders/1U8tBRYISVgY8nnH-xjzF5q3SZMGS1qhG',
+    "id": "5",
+    "num": "05",
+    "number": "Section 05",
+    "title": "The Z-Transform, ROC & Inverse Z-Transform",
+    "description": "ROC determination, pole-zero mapping, partial fraction expansion, and transfer function H(z).",
+    "env": "PDF Handout & Video Session",
+    "duration": "2h 15m",
+    "difficulty": "Advanced",
+    "instructor": "DSP Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1vMdDG5SlSAIIfgreIXOLjLiZgN0uqF0o",
+    "pdfFileName": "Section 5 DSP.pdf",
+    "videoDriveId": "11gN01v2qSW0cS9yKAWIUSs4LQelXcCyI",
+    "videoFileName": "Section 5 DSP.mp4",
+    "videos": [
+      {
+        "title": "Section 5 DSP Video",
+        "type": "drive",
+        "id": "11gN01v2qSW0cS9yKAWIUSs4LQelXcCyI"
+      }
+    ],
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1_ep2RWd0YsI_2s9-D0TGlXg2rufk11VI"
   },
   {
-    id: '6',
-    num: '06',
-    title: 'Section 06: The Z-Transform Systems & Recitations',
-    description: 'Inverse Z-Transform via partial fraction expansion, stability testing, and transfer functions.',
-    env: 'Eng Abd Elhady & Eng Ramadan Notes',
-    duration: '2h',
-    difficulty: 'Advanced',
-    instructor: 'Eng. Abd Elhady & Eng. Ramadan',
-    pdfDriveId: '1ahQ0vToSE_dnjj_VPlLuYh1DYrcgYsLx',
-    pdfFileName: 'Z-transform Eng Abd Elhady.pdf',
-    secondaryPdfDriveId: '1yTw4xsXgO3qNz0TdhsArr3Z39kiiqewj',
-    secondaryPdfFileName: 'Z-transform Eng Ramadan.pdf',
-    driveFolderUrl: 'https://drive.google.com/drive/folders/1SFehqc2mvmDskLgHO8crNKfAbvw1x3Wj',
+    "id": "6",
+    "num": "06",
+    "number": "Section 06",
+    "title": "Discrete Fourier Transform (DFT) Computation & Properties",
+    "description": "DFT & IDFT calculations, circular shift, circular convolution, and matrix formulation.",
+    "env": "PDF Handout & Video Session",
+    "duration": "2h",
+    "difficulty": "Advanced",
+    "instructor": "DSP Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1WPnYpO8vMzFDUR8A0eVWcarxRX20Gjuo",
+    "pdfFileName": "Section 6 DSP.pdf",
+    "videoDriveId": "1iJrrqdvnYN3QCMyalPfEwTM1URaSSMga",
+    "videoFileName": "Section 6 DSP.mp4",
+    "videos": [
+      {
+        "title": "Section 6 DSP Video",
+        "type": "drive",
+        "id": "1iJrrqdvnYN3QCMyalPfEwTM1URaSSMga"
+      }
+    ],
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1_ep2RWd0YsI_2s9-D0TGlXg2rufk11VI"
   },
   {
-    id: '7',
-    num: '07',
-    title: 'Section 07: Filter Structures & DFT Video Recitations',
-    description: 'Direct form I & II realizations, video recitations for Chapter 6 DFT and Section 11.',
-    env: 'Video Recitations (Ch6 & Sec11)',
-    duration: '2h 30m',
-    difficulty: 'Advanced',
-    instructor: 'Eng. Ahmed Ramadan',
-    videoDriveId: '18-TzUPXtQyvwn3RL3SN9xsucNvpG3Rpm',
-    videoFileName: 'Ch6_(DFT).mp4',
-    secondaryVideoDriveId: '1QBkgjbDrwzl4rWWAxFDQ0WXbCUwQtc9l',
-    driveFolderUrl: 'https://drive.google.com/drive/folders/1COuyiGDjhyX3y39PouT8WNJYz6M3GUTE',
+    "id": "7",
+    "num": "07",
+    "number": "Section 07",
+    "title": "Filter Structures & DFT Recitations",
+    "description": "Direct Form I & II realizations, video recitations for Chapter 6 DFT and Section 11.",
+    "env": "PDF Handout & Video Recitations",
+    "duration": "2h 30m",
+    "difficulty": "Advanced",
+    "instructor": "Eng. Ahmed Ramadan & TAs",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1eX-PBorl_8A-aOE9Dq70iI77ofjaPUXP",
+    "pdfFileName": "Section 7 DSP.pdf",
+    "videoDriveId": "1WDyMIqlVmeo4nLW3bGK0EPuY2sR9hkYS",
+    "videoFileName": "Ch6_(DFT).mp4",
+    "secondaryVideoDriveId": "1zkxtHEhLQJzEQZJkvfteeohCXdSm2wgI",
+    "secondaryVideoFileName": "Sec11.mp4",
+    "videos": [
+      {
+        "title": "Ch6 DFT Demonstration",
+        "type": "drive",
+        "id": "1WDyMIqlVmeo4nLW3bGK0EPuY2sR9hkYS"
+      },
+      {
+        "title": "Section 11 Recitation",
+        "type": "drive",
+        "id": "1zkxtHEhLQJzEQZJkvfteeohCXdSm2wgI"
+      }
+    ],
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1_ep2RWd0YsI_2s9-D0TGlXg2rufk11VI"
   },
+  {
+    "id": "8",
+    "num": "08",
+    "number": "Section 08",
+    "title": "Fast Fourier Transform (FFT) Algorithms & Computations",
+    "description": "Radix-2 decimation-in-time and decimation-in-frequency butterfly algorithms and complexity analysis.",
+    "env": "PDF Handout & Video Session",
+    "duration": "2h",
+    "difficulty": "Advanced",
+    "instructor": "DSP Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1oDWrM4eHLKPCiu1csVao6wRX91bEE-CA",
+    "pdfFileName": "Section 8 DSP.pdf",
+    "videoDriveId": "15OLuqEcBV3bZa2-fnPTOWJ7Bak5u-G3t",
+    "videoFileName": "Section 8 DSP.mp4",
+    "videos": [
+      {
+        "title": "Section 8 DSP Video",
+        "type": "drive",
+        "id": "15OLuqEcBV3bZa2-fnPTOWJ7Bak5u-G3t"
+      }
+    ],
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1_ep2RWd0YsI_2s9-D0TGlXg2rufk11VI"
+  }
 ];
 
-export const getSectionById = (id) => {
-  const found = MOCK_SECTIONS.find((s) => s.id === String(id));
+export const MOCK_SIGNALS_SECTIONS = [
+  {
+    "id": "1",
+    "num": "01",
+    "number": "Section 01",
+    "title": "Signal Basics & Elementary Functions Problems",
+    "description": "Continuous and discrete signals, step function, impulse function, ramp function, and time transformation problems.",
+    "env": "PDF Handout & Exercises",
+    "duration": "1h 30m",
+    "difficulty": "Beginner",
+    "instructor": "Signals Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": false,
+    "pdfDriveId": "1llJB15iK0PWdmvvyQbZnRbImQP8yTnsz",
+    "pdfFileName": "Section 1.pdf",
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1jPbB0EZRrRMikFsApemTL8rcTDWkMDnQ"
+  },
+  {
+    "id": "2",
+    "num": "02",
+    "number": "Section 02",
+    "title": "Signals Transformations & System Properties",
+    "description": "Eng. Ahmed Abdelhadi & Eng. Ahmed Ramadan recitations on linearity, time invariance, and signal sketching.",
+    "env": "Recitation Notes & Materials",
+    "duration": "2h",
+    "difficulty": "Intermediate",
+    "instructor": "Eng. Ahmed Abdelhadi & Eng. Ramadan",
+    "hasPdf": true,
+    "hasVideo": false,
+    "pdfDriveId": "1cIZ_fq-8BrSl5EtUau07utOvDYnKQkzN",
+    "pdfFileName": "Dream part 02.pdf",
+    "driveFolderUrl": "https://drive.google.com/drive/folders/10iKr6SHCNgw3jdRbqHQxNZ5pFAkAicHX"
+  },
+  {
+    "id": "3",
+    "num": "03",
+    "number": "Section 03",
+    "title": "Energy, Power & Periodicity Problems",
+    "description": "Calculating total energy and average power of signals, periodic signal identification, and fundamental frequency.",
+    "env": "Handouts & Video Demonstrations",
+    "duration": "2h",
+    "difficulty": "Intermediate",
+    "instructor": "Signals Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1fUfJYidKrxxXjjm1FCqpL_kuwZmy0sX0",
+    "pdfFileName": "Section 2 Signals.pdf",
+    "secondaryPdfDriveId": "1IhcuspM8hoLwqKF6q9JLijo6034DRsUO",
+    "videoDriveId": "1P848uLvUL_nOwRSrSmOUxSYcMnjnLvJs",
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1W3lpBCjk1iFMVoT4PkYa-Rs3z48EeuT3"
+  },
+  {
+    "id": "4",
+    "num": "04",
+    "number": "Section 04",
+    "title": "Continuous-Time LTI Systems & Convolution",
+    "description": "Step response, impulse response, graphical evaluation of convolution integral, and system stability testing.",
+    "env": "Video Session + PDF",
+    "duration": "1h 45m",
+    "difficulty": "Intermediate",
+    "instructor": "Signals Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1VvSpNitLnIs2Xqv-4oVO0nd21SMvsqLO",
+    "pdfFileName": "sec 6.pdf",
+    "videoDriveId": "1elROWQal9nRfoHQuXJOzc0EUuEuLuMBg",
+    "videoFileName": "Sec6.mp4",
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1ufQns3LFxmNYO_WTH4XxkSd7lrHUW4FJ"
+  },
+  {
+    "id": "5",
+    "num": "05",
+    "number": "Section 05",
+    "title": "Fourier Series Representation & Calculations",
+    "description": "Evaluation of Fourier series coefficients ak, bk, ck, Dirichlet conditions, and harmonic frequency spectrum.",
+    "env": "Video Session & Solutions",
+    "duration": "2h 15m",
+    "difficulty": "Advanced",
+    "instructor": "Signals Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1LrOcSOpBv2DF05fzTLHiX2M8YHkTGLuf",
+    "pdfFileName": "Copy of Section 5.pdf",
+    "videoDriveId": "1uAV_y30GKOM3DXqAoow7ar4dOKM_1DKP",
+    "videoFileName": "Copy of Section 5.mp4",
+    "driveFolderUrl": "https://drive.google.com/drive/folders/10XloHNJR8dIsUSsXacmY7g50FPzMsuxp"
+  },
+  {
+    "id": "6",
+    "num": "06",
+    "number": "Section 06",
+    "title": "Laplace Transform Analysis & Inverse Laplace",
+    "description": "Partial fraction expansions, bilateral Laplace properties, solving differential equations using unilateral Laplace.",
+    "env": "Eng. Abd Elhady Recitation + PDF",
+    "duration": "2h",
+    "difficulty": "Advanced",
+    "instructor": "Eng. Ahmed Abd Elhady",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1x3QaRzd_y69QYhReOHVD7op3Lsp7jp48",
+    "pdfFileName": "Laplace-transform Eng Abd Elhady.pdf",
+    "videoDriveId": "1zqDQ1_RXzKULi7X3txXZpFbYkRm5B3Sv",
+    "videoFileName": "Laplace-transform Eng Abd Elhady..mp4",
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1Fc7F2gECS8R7akj9E1d1jKRPaxdXUwgk"
+  },
+  {
+    "id": "7",
+    "num": "07",
+    "number": "Section 07",
+    "title": "System Transfer Function & Frequency Response",
+    "description": "Bode plots for first and second order systems, cutoff frequency, bandwidth, and phase margin analysis.",
+    "env": "Video Recitations + Solution Sheet",
+    "duration": "2h 30m",
+    "difficulty": "Advanced",
+    "instructor": "Signals Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "1OCnOIOMcXtLuMpVtyJ1FUyXcKKZc1-0o",
+    "pdfFileName": "Sec_9.pdf",
+    "videoDriveId": "1lH_RZ8aU3v5taR8XiSYl9ww2HkmCAUAZ",
+    "videoFileName": "Sec9_part2.mp4",
+    "driveFolderUrl": "https://drive.google.com/drive/folders/18kDw3wVBxbvg_o_5PQih10CukO2Cpt0A"
+  },
+  {
+    "id": "8",
+    "num": "08",
+    "number": "Section 08",
+    "title": "State-Space & Advanced Frequency Response Problems",
+    "description": "State variable formulation, transition matrix, solving state equations, and comprehensive course problem sets.",
+    "env": "Section 8 Notes + Video Session",
+    "duration": "2h",
+    "difficulty": "Advanced",
+    "instructor": "Signals Teaching Assistants",
+    "hasPdf": true,
+    "hasVideo": true,
+    "pdfDriveId": "18rm1onfocKundkoJsRVtSs9WRMzafLd9",
+    "pdfFileName": "Section 8",
+    "videoDriveId": "1S-jBrYdundp2Sw9p2Rsmx5UfnKlnZqm0",
+    "videoFileName": "Copy of Sec10.mp4",
+    "driveFolderUrl": "https://drive.google.com/drive/folders/1Mrq51yFor-RaxQNUTshANX-YhS0U5ANh"
+  }
+];
+
+// Backward compatible default export
+export const MOCK_SECTIONS = MOCK_DSP_SECTIONS;
+
+/**
+ * Get sections by selected course (signals or dsp)
+ */
+export const getSectionsByCourse = (courseId = 'signals') => {
+  return courseId === 'signals' ? MOCK_SIGNALS_SECTIONS : MOCK_DSP_SECTIONS;
+};
+
+/**
+ * Get specific section by ID with course fallback
+ */
+export const getSectionById = (id, courseId = 'signals') => {
+  const dataset = getSectionsByCourse(courseId);
+  const found = dataset.find((s) => s.id === String(id));
   if (found) return found;
+
   const num = parseInt(id, 10) || 1;
+  const numStr = num.toString().padStart(2, '0');
   return {
     id: String(id),
-    num: num.toString().padStart(2, '0'),
-    title: `Section ${num.toString().padStart(2, '0')}`,
-    description: 'DSP recitation notes and practice problems.',
+    num: numStr,
+    number: `Section ${numStr}`,
+    title: `Section ${numStr} Exercises & Recitation`,
+    description: 'Practical section recitation notes, exercises and demonstration videos.',
     env: 'Google Drive Materials',
     duration: '2h',
     difficulty: 'Intermediate',
-    instructor: 'DSP Teaching Assistants',
+    instructor: 'Teaching Assistants',
+    hasPdf: true,
+    hasVideo: false,
+    pdfDriveId: null,
     driveFolderUrl: 'https://drive.google.com/drive/folders/1nBxzW5s3j9pr2YbGMbP1MZvEuqTwOzUv',
   };
 };

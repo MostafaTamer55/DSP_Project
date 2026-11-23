@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { getSectionById } from '../data/mockSections';
+import { useCourse } from '../../courses/context/CourseContext';
 import {
   ArrowLeft,
   ChevronLeft,
@@ -33,7 +35,9 @@ export const SectionPdfPage = () => {
   const [zoomLevel, setZoomLevel] = useState(100);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
-  const sectionNumberStr = `Section ${currentId.toString().padStart(2, '0')}`;
+  const { courseId } = useCourse();
+  const section = getSectionById(currentId, courseId);
+  const sectionNumberStr = section.number || `Section ${currentId.toString().padStart(2, '0')}`;
 
   const handleZoomIn = () => {
     setZoomLevel((prev) => Math.min(prev + 10, 150));
@@ -53,6 +57,9 @@ export const SectionPdfPage = () => {
 
   const handleDownload = () => {
     setDownloadSuccess(true);
+    if (section.pdfDriveId) {
+      window.open(`https://drive.google.com/uc?export=download&id=${section.pdfDriveId}`, '_blank');
+    }
     setTimeout(() => setDownloadSuccess(false), 2500);
   };
 
@@ -86,7 +93,7 @@ export const SectionPdfPage = () => {
         <div className="flex flex-col justify-center min-w-0 mr-auto sm:ml-2">
           <div className="flex items-center gap-2">
             <h2 className="text-xs sm:text-sm font-bold text-[#15313C] truncate">
-              {sectionNumberStr} · Section title
+              {sectionNumberStr} · {section.title}
             </h2>
             <span className="px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold bg-[#F5F8F9] border border-[#D7E0E3] text-[#15313C]">
               PDF
@@ -173,45 +180,34 @@ export const SectionPdfPage = () => {
           <span>PDF viewer area</span>
         </div>
 
-        {/* Centered Document Sheet (Exact Skeleton matching screenshot) */}
-        <div
-          className="w-full max-w-[580px] sm:max-w-[620px] bg-white rounded-2xl shadow-[0_10px_35px_rgba(0,0,0,0.05)] border border-[#EAF0F2] p-8 sm:p-14 min-h-[720px] transition-transform duration-200 select-none"
-          style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
-        >
-          {/* Header Block Placeholder */}
-          <div className="space-y-2.5 mb-8">
-            <div className="h-6 w-3/5 bg-[#E1EAF0] rounded-md" />
-            <div className="h-3.5 w-2/5 bg-[#E1EAF0] rounded-sm" />
+        {section.pdfDriveId ? (
+          <div className="w-full max-w-4xl bg-white rounded-2xl shadow-md border border-[#EAF0F2] overflow-hidden" style={{ minHeight: '740px' }}>
+            <iframe
+              src={`https://drive.google.com/file/d/${section.pdfDriveId}/preview`}
+              title={`${sectionNumberStr} PDF`}
+              className="w-full h-[740px] border-0"
+              allow="autoplay"
+            />
           </div>
-
-          {/* Top Paragraph Lines Placeholder (5 lines) */}
-          <div className="space-y-2.5 mb-8">
-            <div className="h-2.5 w-full bg-[#E1EAF0] rounded-full" />
-            <div className="h-2.5 w-full bg-[#E1EAF0] rounded-full" />
-            <div className="h-2.5 w-full bg-[#E1EAF0] rounded-full" />
-            <div className="h-2.5 w-[94%] bg-[#E1EAF0] rounded-full" />
-            <div className="h-2.5 w-[65%] bg-[#E1EAF0] rounded-full" />
-          </div>
-
-          {/* Central Diagram / Figure Box Placeholder (clean rounded box) */}
-          <div className="w-full h-44 sm:h-52 bg-[#F3F7F9] border border-[#DEE7ED] rounded-2xl mb-8" />
-
-          {/* Bottom Paragraph Lines Placeholder (2 groups matching screenshot) */}
-          <div className="space-y-2.5">
-            <div className="h-2.5 w-full bg-[#E1EAF0] rounded-full" />
-            <div className="h-2.5 w-full bg-[#E1EAF0] rounded-full" />
-            <div className="h-2.5 w-full bg-[#E1EAF0] rounded-full" />
-            <div className="h-2.5 w-full bg-[#E1EAF0] rounded-full" />
-            <div className="h-2.5 w-[65%] bg-[#E1EAF0] rounded-full" />
-
-            <div className="pt-2 space-y-2.5">
-              <div className="h-2.5 w-full bg-[#E1EAF0] rounded-full" />
-              <div className="h-2.5 w-full bg-[#E1EAF0] rounded-full" />
-              <div className="h-2.5 w-[95%] bg-[#E1EAF0] rounded-full" />
-              <div className="h-2.5 w-[60%] bg-[#E1EAF0] rounded-full" />
+        ) : (
+          <div
+            className="w-full max-w-[580px] sm:max-w-[620px] bg-white rounded-2xl shadow-[0_10px_35px_rgba(0,0,0,0.05)] border border-[#EAF0F2] p-8 sm:p-14 min-h-[720px] transition-transform duration-200 select-none text-center"
+            style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
+          >
+            <div className="py-20">
+              <p className="text-base font-bold text-[#15313C] mb-2">{section.title}</p>
+              <p className="text-xs text-[#6B8089] mb-6">{section.description}</p>
+              <a
+                href={section.driveFolderUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-2.5 rounded-full bg-[#15313C] text-white text-xs font-semibold inline-flex items-center gap-2"
+              >
+                Open Section Materials on Google Drive ↗
+              </a>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 
 import { getLectureById } from '../data/mockLectures';
+import { useCourse } from '../../courses/context/CourseContext';
 import { useProgress } from '../../progress/services/progressService';
 
 /**
@@ -27,7 +28,8 @@ import { useProgress } from '../../progress/services/progressService';
 export const LecturePlayerPage = () => {
   const { lectureId = '2' } = useParams();
   const currentId = parseInt(lectureId, 10) || 2;
-  const lecture = getLectureById(currentId);
+  const { courseId } = useCourse();
+  const lecture = getLectureById(currentId, courseId);
 
   const { progressData, toggleLectureWatched } = useProgress();
   const currentLectureProgress = progressData.lectures?.find(
@@ -59,10 +61,10 @@ export const LecturePlayerPage = () => {
 
           {/* Heading & Subtitle */}
           <h1 className="text-3xl sm:text-4xl font-bold text-[#15313C] tracking-tight">
-            Lecture title
+            {lecture.title}
           </h1>
           <p className="text-xs sm:text-[13px] text-[#6B8089] mt-1.5 leading-relaxed">
-            Optional lecture description appears here.
+            {lecture.description}
           </p>
         </div>
 

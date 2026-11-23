@@ -10,6 +10,9 @@ import {
   X,
 } from 'lucide-react';
 import VideoPlayerFrame from '../components/VideoPlayerFrame';
+import UniversalVideoPlayer from '../../../components/common/UniversalVideoPlayer';
+import { getSectionById } from '../data/mockSections';
+import { useCourse } from '../../courses/context/CourseContext';
 
 /**
  * SectionDetailPage Component
@@ -40,26 +43,24 @@ export const SectionDetailPage = () => {
   // Sections 02, 05, 06 are PDF only (Case 2)
   // Can also be overridden with query ?video=false or ?video=true for testing
   const videoQuery = searchParams.get('video');
+  const { courseId } = useCourse();
+  const rawSection = getSectionById(sectionId, courseId);
   const hasVideo =
     videoQuery === 'false'
       ? false
       : videoQuery === 'true'
       ? true
-      : secNum !== 2 && secNum !== 5 && secNum !== 6;
+      : Boolean(rawSection?.hasVideo);
 
-  // Mock section data (pure frontend)
   const section = {
-    id: sectionId,
-    number: sectionNumberStr,
-    title: 'Section title',
-    description: 'Optional section description appears here.',
-    hasPdf: true,
+    ...rawSection,
     hasVideo,
-    videoUrl: 'https://drive.google.com/drive/folders/example-dsp-section',
-    pdfUrl: '#',
   };
 
   const handleDownload = () => {
+    if (section.pdfDriveId) {
+      window.open(`https://drive.google.com/uc?export=download&id=${section.pdfDriveId}`, '_blank');
+    }
     setDownloadSuccess(true);
     setTimeout(() => setDownloadSuccess(false), 3000);
   };
@@ -286,9 +287,13 @@ export const SectionDetailPage = () => {
 
             {/* Video Player Frame */}
             <div className="p-3 sm:p-5 bg-black/40">
-              <VideoPlayerFrame
-                title={`${section.number} - Practical Section Video`}
-                autoPlay={true}
+              <UniversalVideoPlayer
+                title={`${section.number} - ${section.title}`}
+                videoDriveId={section.videoDriveId}
+                youtubeId={section.youtubeId}
+                videoUrl={section.videoUrl}
+                videos={section.videos}
+                driveFolderUrl={section.driveFolderUrl}
               />
             </div>
 

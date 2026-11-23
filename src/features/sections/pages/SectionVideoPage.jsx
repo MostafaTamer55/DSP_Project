@@ -8,6 +8,9 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import VideoPlayerFrame from '../components/VideoPlayerFrame';
+import UniversalVideoPlayer from '../../../components/common/UniversalVideoPlayer';
+import { getSectionById } from '../data/mockSections';
+import { useCourse } from '../../courses/context/CourseContext';
 
 /**
  * SectionVideoPage Component
@@ -21,7 +24,9 @@ import VideoPlayerFrame from '../components/VideoPlayerFrame';
 export const SectionVideoPage = () => {
   const { sectionId = '1' } = useParams();
   const currentId = parseInt(sectionId, 10) || 1;
-  const sectionNumberStr = `Section ${currentId.toString().padStart(2, '0')}`;
+  const { courseId } = useCourse();
+  const section = getSectionById(currentId, courseId);
+  const sectionNumberStr = section.number || `Section ${currentId.toString().padStart(2, '0')}`;
 
   // Previous and Next section IDs
   const prevId = currentId > 1 ? currentId - 1 : null;
@@ -48,7 +53,7 @@ export const SectionVideoPage = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h1 className="text-3xl sm:text-4xl font-bold text-[#15313C] tracking-tight">
-              {sectionNumberStr} · Section title
+              {sectionNumberStr} · {section.title}
             </h1>
             <p className="text-xs sm:text-sm text-[#6B8089] mt-1">
               Practical section video session & demonstrations.
@@ -64,11 +69,15 @@ export const SectionVideoPage = () => {
 
       {/* 2. MAIN TWO-COLUMN CONTENT GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        {/* Left Column (8 cols): 16:9 Video Player Frame */}
+        {/* Left Column (8 cols): Interactive Video Session (Google Drive, YouTube, or MP4) */}
         <div className="lg:col-span-8 flex flex-col justify-start">
-          <VideoPlayerFrame
-            title={`${sectionNumberStr} - Video Session`}
-            autoPlay={false}
+          <UniversalVideoPlayer
+            title={`${sectionNumberStr} · ${section.title}`}
+            videoDriveId={section.videoDriveId}
+            youtubeId={section.youtubeId}
+            videoUrl={section.videoUrl}
+            videos={section.videos}
+            driveFolderUrl={section.driveFolderUrl}
           />
         </div>
 
@@ -81,7 +90,7 @@ export const SectionVideoPage = () => {
                 {sectionNumberStr}
               </span>
               <h2 className="text-xl sm:text-[22px] font-bold text-[#15313C] tracking-tight mt-0.5">
-                Section title
+                {section.title}
               </h2>
 
               {/* Pills: Video & PDF */}
