@@ -76,7 +76,7 @@ export const LecturePdfPage = () => {
       </nav>
 
       {/* 2. FLOATING PDF TOOLBAR */}
-      <div className="bg-white/95 backdrop-blur-md rounded-2xl sm:rounded-full border border-[#EAF0F2] shadow-[0_8px_30px_rgba(21,49,60,0.04)] py-2.5 px-3.5 sm:px-6 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+      <div className="bg-white/95 backdrop-blur-md rounded-full border border-[#EAF0F2] shadow-[0_8px_30px_rgba(21,49,60,0.04)] py-2.5 px-4 sm:px-6 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         {/* Left: Back to Lecture Button */}
         <Link
           to={`/lectures/${currentId}`}

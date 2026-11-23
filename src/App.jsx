@@ -1,16 +1,16 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './features/auth/context/AuthContext';
-import { CourseProvider } from './features/courses/context/CourseContext';
+import { SubjectProvider } from './context/SubjectContext';
 import AppRoutes from './routes/AppRoutes';
 
 export function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <CourseProvider>
+        <SubjectProvider>
           <AppRoutes />
-        </CourseProvider>
+        </SubjectProvider>
       </AuthProvider>
     </BrowserRouter>
   );

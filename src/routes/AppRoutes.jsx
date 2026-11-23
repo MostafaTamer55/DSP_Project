@@ -33,16 +33,19 @@ import SectionVideoPage from '../features/sections/pages/SectionVideoPage';
 
 // Exam Bank (Figma 08)
 import ExamBankPage from '../features/exams/pages/ExamBankPage';
+import QuestionsByLecturePage from '../features/exams/pages/QuestionsByLecturePage';
+import QuestionPdfPage from '../features/exams/pages/QuestionPdfPage';
+import PastExamsPage from '../features/exams/pages/PastExamsPage';
+import PastExamPdfPage from '../features/exams/pages/PastExamPdfPage';
+import PdfViewerPage from '../features/exams/pages/PdfViewerPage';
 import ExamRunnerPage from '../features/exams/pages/ExamRunnerPage';
 import ExamResultsPage from '../features/exams/pages/ExamResultsPage';
-import QuestionsByLecturePage from "../features/exams/pages/QuestionsByLecturePage";
-import PastExamsPage from "../features/exams/pages/PastExamsPage";
-import PdfViewerPage from "../features/exams/pages/PdfViewerPage";
 
 // Progress (Figma 09)
 import ProgressPage from '../features/progress/pages/ProgressPage';
 
-// Settings (Figma 10)
+// Profile & Settings (Figma 10)
+import ProfilePage from '../features/settings/pages/ProfilePage';
 import SettingsPage from '../features/settings/pages/SettingsPage';
 
 // 404
@@ -87,8 +90,12 @@ export const AppRoutes = () => {
           <Route path="/exam-bank/past-exams/:state" element={<PastExamsPage />} />
           <Route path="/exam-bank/pdf-viewer/:variant/:fileId" element={<PdfViewerPage />} />
           <Route path="/exams" element={<Navigate to="/exam-bank" replace />} />
+          <Route path="/exams/questions" element={<QuestionsByLecturePage />} />
+          <Route path="/exams/questions/:lectureId/:fileId" element={<QuestionPdfPage />} />
+          <Route path="/exams/past-exams" element={<PastExamsPage />} />
+          <Route path="/exams/past-exams/:examId" element={<PastExamPdfPage />} />
           <Route path="/exams/:examId/results" element={<ExamResultsPage />} />
-          
+
           {/* Progress & Analytics */}
           <Route path="/progress" element={<ProgressPage />} />
           <Route path="/progress/sections" element={<Navigate to="/progress?view=sections" replace />} />
@@ -97,7 +104,9 @@ export const AppRoutes = () => {
           <Route path="/progress/quiz-retake" element={<Navigate to="/progress?view=quiz-retake" replace />} />
 
           {/* Profile & Settings */}
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/settings/change-password" element={<SettingsPage />} />
         </Route>
 
         {/* Distraction-Free Exam Runner (Figma Page 08 Full-Screen Assessment) */}
