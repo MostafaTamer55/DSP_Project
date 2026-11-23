@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../features/auth/context/AuthContext';
 import { useCourse } from '../features/courses/context/CourseContext';
+import AIAgentWidget from '../components/common/AIAgentWidget';
 import {
   LayoutGrid,
   BookOpen,
@@ -206,6 +207,9 @@ export const AppLayout = () => {
       <main className="flex-1 max-w-[1140px] w-full mx-auto px-3 sm:px-6 py-5 sm:py-8 overflow-x-hidden">
         <Outlet />
       </main>
+
+      {/* Floating AI Agent Widget */}
+      <AIAgentWidget />
     </div>
   );
 };

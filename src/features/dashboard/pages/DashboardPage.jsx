@@ -9,6 +9,7 @@ import {
   FolderArchive,
   ArrowRight,
   Play,
+  Sparkles,
 } from 'lucide-react';
 
 /**
@@ -263,6 +264,42 @@ export const DashboardPage = () => {
             </span>
           </div>
         </div>
+      </div>
+
+      {/* AI STUDY ASSISTANT HERO BANNER */}
+      <div className="rounded-[24px] sm:rounded-[28px] bg-gradient-to-r from-[#15313C] via-[#1a3d4a] to-[#255462] p-6 sm:p-7 text-white shadow-[0_15px_40px_rgba(21,49,60,0.14)] border border-[#CCEB74]/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 relative overflow-hidden select-none">
+        {/* Glow */}
+        <div className="absolute top-0 right-1/4 w-60 h-60 bg-[#CCEB74]/10 blur-3xl rounded-full pointer-events-none" />
+
+        <div className="flex items-center gap-4 sm:gap-5 relative z-10 min-w-0">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-[#CCEB74] bg-[#0d222b] shrink-0 shadow-md">
+            <img src="/ai-agent.png" alt="AI Agent" className="w-full h-full object-cover" />
+          </div>
+          <div className="min-w-0">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#CCEB74]/20 text-[#CCEB74] border border-[#CCEB74]/30 mb-1.5">
+              <Sparkles className="w-3 h-3 text-[#CCEB74]" />
+              <span>Gemini AI Tutor</span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+              المساعد الذكي لمادة {currentCourse.title}
+            </h3>
+            <p className="text-xs sm:text-[13px] text-slate-300 mt-1 max-w-xl leading-relaxed">
+              مدرب ومزود بجميع محاضرات وسكاشن ومسائل المنهج للإجابة الفورية وتوضيح أي استفسار خطوة بخطوة.
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            const ev = new CustomEvent('dsp_open_ai_agent');
+            window.dispatchEvent(ev);
+          }}
+          className="bg-[#CCEB74] hover:bg-[#bfee50] active:scale-[0.98] text-[#15313C] font-bold text-xs sm:text-sm py-3 px-6 rounded-full inline-flex items-center gap-2 shadow-sm hover:shadow-md transition-all shrink-0 cursor-pointer self-stretch sm:self-auto justify-center relative z-10"
+        >
+          <span>تحدث مع المساعد</span>
+          <ArrowRight className="w-4 h-4 stroke-[2.25]" />
+        </button>
       </div>
 
       {/* 4. CONTINUE LEARNING SECTION */}
