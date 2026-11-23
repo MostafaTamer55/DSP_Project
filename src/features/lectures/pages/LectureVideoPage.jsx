@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   Play,
@@ -19,6 +19,7 @@ import { getLectureById } from '../data/mockLectures';
 import UniversalVideoPlayer from '../../../components/common/UniversalVideoPlayer';
 import { useCourse } from '../../courses/context/CourseContext';
 import { useProgress } from '../../progress/services/progressService';
+import { recordActivity } from '../../../services/activityTracker';
 
 /**
  * Dedicated Video Page matching:
@@ -34,6 +35,21 @@ export const LectureVideoPage = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(38); // 38% progress for demo
+
+  useEffect(() => {
+    if (lecture) {
+      recordActivity({
+        type: 'lecture',
+        courseId,
+        id: String(currentId),
+        number: lecture.number || `Lecture ${String(currentId).padStart(2, '0')}`,
+        title: lecture.title,
+        path: `/lectures/${currentId}/video`,
+        label: 'Lecture Video',
+        duration: lecture.videoDuration,
+      });
+    }
+  }, [currentId, courseId, lecture]);
 
   const { progressData, markLectureWatched, toggleLectureWatched } = useProgress();
   const currentLectureProgress = progressData.lectures?.find(

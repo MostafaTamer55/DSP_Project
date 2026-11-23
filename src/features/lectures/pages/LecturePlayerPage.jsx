@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   Video,
@@ -15,6 +15,7 @@ import {
 import { getLectureById } from '../data/mockLectures';
 import { useCourse } from '../../courses/context/CourseContext';
 import { useProgress } from '../../progress/services/progressService';
+import { recordActivity } from '../../../services/activityTracker';
 
 /**
  * Lecture Details / Player Page matching Figma screen/lectures/details/default
@@ -30,6 +31,21 @@ export const LecturePlayerPage = () => {
   const currentId = parseInt(lectureId, 10) || 2;
   const { courseId } = useCourse();
   const lecture = getLectureById(currentId, courseId);
+
+  useEffect(() => {
+    if (lecture) {
+      recordActivity({
+        type: 'lecture',
+        courseId,
+        id: String(currentId),
+        number: lecture.number || `Lecture ${String(currentId).padStart(2, '0')}`,
+        title: lecture.title,
+        path: `/lectures/${currentId}/video`,
+        label: 'Lecture Session',
+        duration: lecture.videoDuration,
+      });
+    }
+  }, [currentId, courseId, lecture]);
 
   const { progressData, toggleLectureWatched } = useProgress();
   const currentLectureProgress = progressData.lectures?.find(

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   FileText,
@@ -11,6 +11,7 @@ import VideoPlayerFrame from '../components/VideoPlayerFrame';
 import UniversalVideoPlayer from '../../../components/common/UniversalVideoPlayer';
 import { getSectionById } from '../data/mockSections';
 import { useCourse } from '../../courses/context/CourseContext';
+import { recordActivity } from '../../../services/activityTracker';
 
 /**
  * SectionVideoPage Component
@@ -27,6 +28,21 @@ export const SectionVideoPage = () => {
   const { courseId } = useCourse();
   const section = getSectionById(currentId, courseId);
   const sectionNumberStr = section.number || `Section ${currentId.toString().padStart(2, '0')}`;
+
+  useEffect(() => {
+    if (section) {
+      recordActivity({
+        type: 'section',
+        courseId,
+        id: String(currentId),
+        number: sectionNumberStr,
+        title: section.title,
+        path: `/sections/${currentId}/video`,
+        label: 'Section Video',
+        duration: section.duration,
+      });
+    }
+  }, [currentId, courseId, section, sectionNumberStr]);
 
   // Previous and Next section IDs
   const prevId = currentId > 1 ? currentId - 1 : null;

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCourse } from '../../courses/context/CourseContext';
+import { useRecentActivity } from '../../../services/activityTracker';
 import {
   Search,
   BookOpen,
   Layers,
   FolderArchive,
   ArrowRight,
+  Play,
 } from 'lucide-react';
 
 /**
@@ -23,7 +25,8 @@ import {
  * const { data } = await api.get(`/dashboard?course=${courseId}`);
  */
 export const DashboardPage = () => {
-  const { currentCourse } = useCourse();
+  const { courseId, currentCourse } = useCourse();
+  const { mostRecentItem } = useRecentActivity(courseId);
   const [searchQuery, setSearchQuery] = useState('');
 
   // 18 3D fluted vertical cylindrical ribs for the panoramic hero banner
@@ -264,35 +267,88 @@ export const DashboardPage = () => {
 
       {/* 4. CONTINUE LEARNING SECTION */}
       <div className="pt-2">
-        <h2 className="text-2xl font-bold text-[#15313C] tracking-tight mb-4">
-          Continue learning
-        </h2>
-
-        {/* Dashed Border Empty State Card */}
-        <div className="w-full rounded-[24px] sm:rounded-[26px] border border-dashed border-[#B5C2C7] bg-white/70 p-6 sm:p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-colors">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-[#F1FBD2] flex items-center justify-center text-[#3D6317] shrink-0">
-              <BookOpen className="w-5 h-5 stroke-[1.75]" />
-            </div>
-            <div>
-              <h4 className="text-base sm:text-lg font-bold text-[#15313C]">
-                Nothing opened yet
-              </h4>
-              <p className="text-xs sm:text-[13px] text-[#6B8089] mt-0.5 leading-relaxed max-w-xl">
-                Lectures, sections, and exam resources you open will appear here, so you can pick up where you left off.
-              </p>
-            </div>
-          </div>
-
-          {/* Action button */}
-          <Link
-            to="/lectures"
-            className="bg-[#CCEB74] hover:bg-[#bce64f] active:scale-[0.98] text-[#15313C] font-semibold text-xs sm:text-sm py-2.5 px-5 rounded-full inline-flex items-center gap-2 shadow-xs transition-all shrink-0 cursor-pointer"
-          >
-            <span>Browse lectures</span>
-            <ArrowRight className="w-4 h-4 stroke-[2.25]" />
-          </Link>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold text-[#15313C] tracking-tight">
+            Continue learning
+          </h2>
+          {mostRecentItem && (
+            <Link
+              to="/lectures"
+              className="text-xs sm:text-sm font-semibold text-[#6B8089] hover:text-[#15313C] transition-colors"
+            >
+              Browse all
+            </Link>
+          )}
         </div>
+
+        {mostRecentItem ? (
+          /* Active Continue Learning Card matching design system */
+          <div className="w-full rounded-[24px] sm:rounded-[26px] bg-white border border-[#EAF0F2] shadow-[0_12px_35px_rgba(21,49,60,0.04)] p-6 sm:p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 hover:shadow-[0_16px_40px_rgba(21,49,60,0.07)] transition-all">
+            <div className="flex items-center gap-4 sm:gap-5 min-w-0">
+              {/* Dynamic Icon Box */}
+              <div className="w-12 h-12 rounded-2xl bg-[#15313C] flex items-center justify-center text-[#CCEB74] shrink-0 shadow-xs">
+                {mostRecentItem.type === 'section' ? (
+                  <Layers className="w-5 h-5 stroke-[2]" />
+                ) : (
+                  <Play className="w-5 h-5 fill-current ml-0.5" />
+                )}
+              </div>
+
+              {/* Title & Metadata */}
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#EFF7CD] text-[#3D6317] border border-[#d6ec8c]">
+                    {mostRecentItem.number || mostRecentItem.label || 'Lecture'}
+                  </span>
+                  <span className="text-xs text-[#6B8089]">
+                    Recently opened
+                  </span>
+                </div>
+                <h4 className="text-base sm:text-lg font-bold text-[#15313C] truncate">
+                  {mostRecentItem.title}
+                </h4>
+                <p className="text-xs text-[#6B8089] mt-0.5 truncate">
+                  Pick up where you left off • {mostRecentItem.duration ? `Duration: ${mostRecentItem.duration}` : 'Resume learning'}
+                </p>
+              </div>
+            </div>
+
+            {/* Action button */}
+            <Link
+              to={mostRecentItem.path || `/lectures/${mostRecentItem.id}/video`}
+              className="bg-[#CCEB74] hover:bg-[#bce64f] active:scale-[0.98] text-[#15313C] font-bold text-xs sm:text-sm py-2.5 px-6 rounded-full inline-flex items-center gap-2 shadow-xs hover:shadow-sm transition-all shrink-0 cursor-pointer self-stretch sm:self-auto justify-center"
+            >
+              <span>Resume learning</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.25]" />
+            </Link>
+          </div>
+        ) : (
+          /* Dashed Border Empty State Card */
+          <div className="w-full rounded-[24px] sm:rounded-[26px] border border-dashed border-[#B5C2C7] bg-white/70 p-6 sm:p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-colors">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-[#F1FBD2] flex items-center justify-center text-[#3D6317] shrink-0">
+                <BookOpen className="w-5 h-5 stroke-[1.75]" />
+              </div>
+              <div>
+                <h4 className="text-base sm:text-lg font-bold text-[#15313C]">
+                  Nothing opened yet
+                </h4>
+                <p className="text-xs sm:text-[13px] text-[#6B8089] mt-0.5 leading-relaxed max-w-xl">
+                  Lectures, sections, and exam resources you open will appear here, so you can pick up where you left off.
+                </p>
+              </div>
+            </div>
+
+            {/* Action button */}
+            <Link
+              to="/lectures"
+              className="bg-[#CCEB74] hover:bg-[#bce64f] active:scale-[0.98] text-[#15313C] font-semibold text-xs sm:text-sm py-2.5 px-5 rounded-full inline-flex items-center gap-2 shadow-xs transition-all shrink-0 cursor-pointer"
+            >
+              <span>Browse lectures</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.25]" />
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

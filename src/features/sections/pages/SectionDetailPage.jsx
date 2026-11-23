@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import {
   FileText,
@@ -13,6 +13,7 @@ import VideoPlayerFrame from '../components/VideoPlayerFrame';
 import UniversalVideoPlayer from '../../../components/common/UniversalVideoPlayer';
 import { getSectionById } from '../data/mockSections';
 import { useCourse } from '../../courses/context/CourseContext';
+import { recordActivity } from '../../../services/activityTracker';
 
 /**
  * SectionDetailPage Component
@@ -56,6 +57,21 @@ export const SectionDetailPage = () => {
     ...rawSection,
     hasVideo,
   };
+
+  useEffect(() => {
+    if (section) {
+      recordActivity({
+        type: 'section',
+        courseId,
+        id: String(secNum),
+        number: section.number || sectionNumberStr,
+        title: section.title,
+        path: `/sections/${secNum}`,
+        label: 'Section Details',
+        duration: section.duration,
+      });
+    }
+  }, [secNum, courseId, section, sectionNumberStr]);
 
   const handleDownload = () => {
     if (section.pdfDriveId) {
