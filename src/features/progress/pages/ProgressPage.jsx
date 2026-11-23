@@ -5,6 +5,8 @@ import LecturesProgressBreakdown from '../components/LecturesProgressBreakdown';
 import SectionsProgressBreakdown from '../components/SectionsProgressBreakdown';
 import ExamsProgressBreakdown from '../components/ExamsProgressBreakdown';
 import QuizRetakePreparation from '../components/QuizRetakePreparation';
+import { useCourse } from '../../courses/context/CourseContext';
+import { useProgress } from '../services/progressService';
 
 /**
  * Dedicated Progress Page (/progress) supporting 5 views:
@@ -15,6 +17,8 @@ import QuizRetakePreparation from '../components/QuizRetakePreparation';
  * 5. Prepare for your retake (التحضير لإعادة الكويز - Image 2)
  */
 export const ProgressPage = () => {
+  const { courseId } = useCourse();
+  const { progressData } = useProgress(null, courseId);
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get('tab') || searchParams.get('view');
 
@@ -125,9 +129,15 @@ export const ProgressPage = () => {
 
       {/* VIEW CONTENT */}
       {currentView === 'lectures_breakdown' ? (
-        <LecturesProgressBreakdown onBack={handleBackToOverview} />
+        <LecturesProgressBreakdown
+          onBack={handleBackToOverview}
+          lecturesData={progressData?.lectures}
+        />
       ) : currentView === 'sections_breakdown' ? (
-        <SectionsProgressBreakdown onBack={handleBackToOverview} />
+        <SectionsProgressBreakdown
+          onBack={handleBackToOverview}
+          sectionsData={progressData?.sections}
+        />
       ) : currentView === 'exams_breakdown' ? (
         <ExamsProgressBreakdown
           onBack={handleBackToOverview}
@@ -141,6 +151,7 @@ export const ProgressPage = () => {
         />
       ) : (
         <ProgressSummary
+          data={progressData}
           onSelectLectures={handleSelectLectures}
           onSelectSections={handleSelectSections}
           onSelectExams={handleSelectExams}
