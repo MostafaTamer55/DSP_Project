@@ -12,7 +12,7 @@ const mobileNavLinks = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { name: 'Lectures', path: '/lectures', icon: Video },
   { name: 'Sections', path: '/sections', icon: Layers },
-  { name: 'Exams', path: '/exams', icon: FileQuestion },
+  { name: 'Exams', path: '/exam-bank', icon: FileQuestion },
   { name: 'Progress', path: '/progress', icon: TrendingUp },
 ];
 

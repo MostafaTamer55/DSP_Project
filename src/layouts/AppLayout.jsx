@@ -30,7 +30,7 @@ export const AppLayout = () => {
     { name: 'Dashboard', path: '/dashboard', icon: LayoutGrid },
     { name: 'Lectures', path: '/lectures', icon: BookOpen },
     { name: 'Sections', path: '/sections', icon: Layers },
-    { name: 'Exam Bank', path: '/exams', icon: FolderArchive },
+    { name: 'Exam Bank', path: '/exam-bank', icon: FolderArchive },
     { name: 'Progress', path: '/progress', icon: TrendingUp },
   ];
 

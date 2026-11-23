@@ -17,7 +17,7 @@ const navigationLinks = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { name: 'Lectures', path: '/lectures', icon: Video, badge: '12' },
   { name: 'Sections', path: '/sections', icon: Layers, badge: '6' },
-  { name: 'Exam Bank', path: '/exams', icon: FileQuestion },
+  { name: 'Exam Bank', path: '/exam-bank', icon: FileQuestion },
   { name: 'Progress', path: '/progress', icon: TrendingUp },
   { name: 'Settings', path: '/settings', icon: Settings },
 ];
@@ -85,7 +85,7 @@ export const Sidebar = ({ className = '' }) => {
           Test your FFT & Z-Transform knowledge in the Exam Bank.
         </p>
         <Link
-          to="/exams"
+          to="/exam-bank"
           className="inline-flex items-center text-xs font-semibold text-white bg-brand-600 hover:bg-brand-500 px-3 py-1.5 rounded-lg transition-colors shadow-sm"
         >
           Take Practice Quiz
