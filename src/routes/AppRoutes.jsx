@@ -35,6 +35,9 @@ import SectionVideoPage from '../features/sections/pages/SectionVideoPage';
 import ExamBankPage from '../features/exams/pages/ExamBankPage';
 import ExamRunnerPage from '../features/exams/pages/ExamRunnerPage';
 import ExamResultsPage from '../features/exams/pages/ExamResultsPage';
+import QuestionsByLecturePage from "../features/exams/pages/QuestionsByLecturePage";
+import PastExamsPage from "../features/exams/pages/PastExamsPage";
+import PdfViewerPage from "../features/exams/pages/PdfViewerPage";
 
 // Progress (Figma 09)
 import ProgressPage from '../features/progress/pages/ProgressPage';
@@ -65,7 +68,7 @@ export const AppRoutes = () => {
         {/* Main Application Layout (Figma Pages 05–10) */}
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
-          
+
           {/* Lectures */}
           <Route path="/lectures" element={<LecturesListPage />} />
           <Route path="/lectures/:lectureId" element={<LecturePlayerPage />} />
@@ -79,9 +82,13 @@ export const AppRoutes = () => {
           <Route path="/sections/:sectionId/video" element={<SectionVideoPage />} />
 
           {/* Exam Bank & Review */}
-          <Route path="/exams" element={<ExamBankPage />} />
+          <Route path="/exam-bank" element={<ExamBankPage />} />
+          <Route path="/exam-bank/questions/by-lecture" element={<QuestionsByLecturePage />} />
+          <Route path="/exam-bank/past-exams/:state" element={<PastExamsPage />} />
+          <Route path="/exam-bank/pdf-viewer/:variant/:fileId" element={<PdfViewerPage />} />
+          <Route path="/exams" element={<Navigate to="/exam-bank" replace />} />
           <Route path="/exams/:examId/results" element={<ExamResultsPage />} />
-
+          
           {/* Progress & Analytics */}
           <Route path="/progress" element={<ProgressPage />} />
           <Route path="/progress/sections" element={<Navigate to="/progress?view=sections" replace />} />
