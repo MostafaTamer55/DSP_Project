@@ -39,6 +39,16 @@ const getStoredSession = () => {
     if (!stored) return null;
 
     const session = JSON.parse(stored);
+    const storedCohort = localStorage.getItem('dsp_user_cohort');
+    if (storedCohort) {
+      session.cohort = storedCohort;
+    }
+    const storedYear = localStorage.getItem('dsp_user_academic_year');
+    if (storedYear) {
+      session.academicYear = storedYear;
+    } else if (!session.academicYear) {
+      session.academicYear = 'الفرقة الثالثة';
+    }
     const accounts = getAllAccounts();
     const accountExists = accounts.some(
       (acc) => acc.email.toLowerCase() === session.email?.toLowerCase()
@@ -80,11 +90,15 @@ export const AuthProvider = ({ children }) => {
     }
 
     // Authentication succeeded
+    const storedCohort = localStorage.getItem('dsp_user_cohort') || 'ECE 28';
+    const storedYear = localStorage.getItem('dsp_user_academic_year') || 'الفرقة الثالثة';
     const userSession = {
       id: matchingAccount.id,
       name: matchingAccount.name,
       email: matchingAccount.email,
       role: matchingAccount.role || 'student',
+      cohort: storedCohort,
+      academicYear: storedYear,
     };
 
     localStorage.setItem('dsp_auth_session', JSON.stringify(userSession));
@@ -178,6 +192,35 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
+   * Update student cohort and academic year (الفرقة الدراسية) with persistence
+   */
+  const updateCohort = (newCohort, newYear) => {
+    try {
+      const cleanCohort = String(newCohort || '').trim();
+      const cleanYear = newYear ? String(newYear).trim() : undefined;
+
+      if (cleanCohort) {
+        localStorage.setItem('dsp_user_cohort', cleanCohort);
+      }
+      if (cleanYear) {
+        localStorage.setItem('dsp_user_academic_year', cleanYear);
+      }
+
+      if (currentUser) {
+        const updated = {
+          ...currentUser,
+          ...(cleanCohort && { cohort: cleanCohort }),
+          ...(cleanYear && { academicYear: cleanYear }),
+        };
+        localStorage.setItem('dsp_auth_session', JSON.stringify(updated));
+        setCurrentUser(updated);
+      }
+    } catch (e) {
+      console.error('Failed to update cohort / academic year', e);
+    }
+  };
+
+  /**
    * Log out and clear session
    */
   const logout = () => {
@@ -193,6 +236,7 @@ export const AuthProvider = ({ children }) => {
         login,
         signup,
         updatePassword,
+        updateCohort,
         logout,
         predefinedAccounts: PREDEFINED_ACCOUNTS,
       }}

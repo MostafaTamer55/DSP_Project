@@ -1,117 +1,150 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import Card, { CardBody } from '../../../components/common/Card';
-import Button from '../../../components/common/Button';
-import Badge from '../../../components/common/Badge';
-import SearchBar from '../../../components/forms/SearchBar';
-import { Award, Clock, FileQuestion, CheckCircle2, Play } from 'lucide-react';
-import { useCourse } from '../../courses/context/CourseContext';
+import {
+  ArrowRight,
+  FileText,
+  Archive,
+  Info,
+} from 'lucide-react';
 
-const mockDspExams = [
-  { id: 'midterm-2024', title: 'DSP Midterm Exam (Comprehensive)', type: 'Midterm', questions: 25, duration: '90m', difficulty: 'Hard', attempts: '1 Attempt Left' },
-  { id: 'quiz-ztransform', title: 'Chapter Quiz: Z-Transform & ROC Stability', type: 'Quiz', questions: 10, duration: '20m', difficulty: 'Medium', attempts: 'Unlimited' },
-  { id: 'practice-fft', title: 'Practice Test: FFT Decimation & Complexity', type: 'Practice', questions: 15, duration: '35m', difficulty: 'Medium', attempts: 'Unlimited' },
-  { id: 'quiz-filters', title: 'Chapter Quiz: FIR & IIR Filter Architectures', type: 'Quiz', questions: 12, duration: '25m', difficulty: 'Hard', attempts: 'Unlimited' },
-  { id: 'final-mock', title: 'DSP Final Exam Simulation (All Chapters)', type: 'Mock Final', questions: 40, duration: '120m', difficulty: 'Comprehensive', attempts: '2 Attempts' },
-];
-
-const mockSignalsExams = [
-  { id: 'sig-midterm', title: 'Signals & Systems Midterm Exam', type: 'Midterm', questions: 25, duration: '90m', difficulty: 'Hard', attempts: '1 Attempt Left' },
-  { id: 'sig-conv', title: 'Chapter Quiz: Convolution & LTI Properties', type: 'Quiz', questions: 10, duration: '20m', difficulty: 'Medium', attempts: 'Unlimited' },
-  { id: 'sig-fourier', title: 'Practice Test: Fourier Series & Transforms', type: 'Practice', questions: 15, duration: '35m', difficulty: 'Medium', attempts: 'Unlimited' },
-  { id: 'sig-laplace', title: 'Chapter Quiz: Laplace Transform & ROC', type: 'Quiz', questions: 12, duration: '25m', difficulty: 'Hard', attempts: 'Unlimited' },
-  { id: 'sig-final-mock', title: 'Signals & Systems Final Exam Simulation', type: 'Mock Final', questions: 40, duration: '120m', difficulty: 'Comprehensive', attempts: '2 Attempts' },
-];
-
-export const ExamBankPage = () => {
-  const { courseId } = useCourse();
-  const [search, setSearch] = useState('');
-  const [filterType, setFilterType] = useState('All');
-
-  // BACKEND TEAM NOTE: Replace with API call e.g. api.get(`/exams?course=${courseId}`)
-  const mockExams = courseId === 'signals' ? mockSignalsExams : mockDspExams;
-
-  const filteredExams = mockExams.filter(e => {
-    const matchSearch = e.title.toLowerCase().includes(search.toLowerCase());
-    const matchType = filterType === 'All' || e.type === filterType;
-    return matchSearch && matchType;
-  });
-
+const ExamBankPage = () => {
   return (
-    <div className="space-y-6">
-      {/* Dev & Figma Scope Banner */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-brand-50/70 border border-brand-200/60 rounded-xl text-xs text-brand-900">
-        <div className="flex items-center gap-2">
-          <Badge variant="brand" size="sm">Figma 08 Exam Bank</Badge>
-          <span className="font-medium">Assigned to: Developer 4 (Assessment Engine)</span>
-        </div>
-        <span className="text-brand-700 text-[11px]">Route: <code className="bg-white px-1.5 py-0.5 rounded border border-brand-200">/exams</code></span>
-      </div>
+    <div className="min-h-screen -m-4 sm:-m-6 bg-gradient-to-br from-lime-50 via-white to-sky-100 px-5 py-8 sm:px-8 sm:py-10 lg:px-12">
 
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900">Exam Bank & Assessments</h2>
-          <p className="text-xs text-slate-500 mt-1">Timed quizzes, past midterm assessments, and final exam simulations</p>
-        </div>
-        <SearchBar
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onClear={() => setSearch('')}
-          placeholder="Search exams by name or category..."
-        />
-      </div>
+      <div className="mx-auto max-w-7xl">
 
-      {/* Filter Tabs */}
-      <div className="flex flex-wrap gap-2">
-        {['All', 'Midterm', 'Quiz', 'Practice', 'Mock Final'].map(tab => (
-          <button
-            key={tab}
-            onClick={() => setFilterType(tab)}
-            className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-              filterType === tab
-                ? 'bg-brand-600 text-white shadow-xs'
-                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
-            }`}
+        {/* Header */}
+        <header className="mb-14">
+          <h1 className="text-[42px] font-bold leading-tight tracking-[-0.03em] text-[#17343d] sm:text-5xl lg:text-[52px]">
+            Exam Bank
+          </h1>
+
+          <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-base">
+            PDF resources for study and revision. View a file in the browser or download it.
+          </p>
+        </header>
+
+        {/* Main Cards */}
+        <main className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+          {/* Questions by Lecture */}
+          <Link
+            to="/exams/questions"
+            className="group relative min-h-[275px] overflow-hidden rounded-[30px] border border-[#c9e17b]/40 bg-gradient-to-br from-[#173b46] to-[#24545e] p-7 text-white shadow-lg shadow-slate-900/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-8"
           >
-            {tab}
-          </button>
-        ))}
-      </div>
+            <div className="flex items-center justify-between">
 
-      {/* Exam Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {filteredExams.map(exam => (
-          <Card key={exam.id} hoverable>
-            <CardBody className="p-5 flex flex-col justify-between h-full space-y-4">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <Badge variant="brand" size="sm">{exam.type}</Badge>
-                  <span className="text-xs text-slate-400 font-medium">{exam.difficulty}</span>
-                </div>
-                <h3 className="text-base font-bold text-slate-900">{exam.title}</h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  Covers frequency-domain theorems, pole-zero stability, and digital signal reconstruction.
-                </p>
+              <div className="flex h-[52px] w-[52px] items-center justify-center rounded-[19px] bg-white/15 text-[#d5f36c]">
+                <FileText
+                  size={21}
+                  strokeWidth={1.8}
+                />
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <div className="flex items-center gap-3 text-xs text-slate-400 font-medium">
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" /> {exam.duration}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <FileQuestion className="w-3.5 h-3.5" /> {exam.questions} Qs
-                  </span>
-                </div>
-                <Link to={`/exams/${exam.id}`}>
-                  <Button variant="primary" size="sm" icon={Play}>
-                    Start Exam
-                  </Button>
-                </Link>
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#d5f36c] text-[#173b46] transition-transform duration-300 group-hover:translate-x-1">
+                <ArrowRight
+                  size={21}
+                  strokeWidth={2}
+                />
               </div>
-            </CardBody>
-          </Card>
-        ))}
+
+            </div>
+
+            <div className="mt-10">
+
+              <h2 className="text-[29px] font-bold leading-tight tracking-[-0.02em] sm:text-[32px]">
+                Questions by Lecture
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-white/80 sm:text-base">
+                Question PDFs grouped by lecture or topic.
+              </p>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+
+                <span className="rounded-full border border-white/20 bg-white/15 px-5 py-1 text-xs font-medium leading-5">
+                  Question PDFs
+                </span>
+
+                <span className="rounded-full border border-white/20 bg-white/15 px-5 py-1 text-xs font-medium leading-5">
+                  By lecture
+                </span>
+
+              </div>
+            </div>
+          </Link>
+
+          {/* Past Exams */}
+          <Link
+            to="/exams/past-exams"
+            className="group relative min-h-[275px] overflow-hidden rounded-[30px] border border-slate-200 bg-white/80 p-7 shadow-lg shadow-slate-900/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-8"
+          >
+            <div className="flex items-center justify-between">
+
+              <div className="flex h-[52px] w-[52px] items-center justify-center rounded-[19px] bg-lime-100 text-[#173b46]">
+                <Archive
+                  size={21}
+                  strokeWidth={1.8}
+                />
+              </div>
+
+              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-[#173b46] transition-all duration-300 group-hover:border-lime-300 group-hover:bg-lime-100">
+                <ArrowRight
+                  size={21}
+                  strokeWidth={2}
+                />
+              </div>
+
+            </div>
+
+            <div className="mt-10">
+
+              <h2 className="text-[29px] font-bold leading-tight tracking-[-0.02em] text-[#17343d] sm:text-[32px]">
+                Past Exams
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-base">
+                Previous examination papers in PDF format.
+              </p>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+
+                <span className="rounded-full border border-slate-200 bg-white px-4 py-1 text-xs font-medium leading-5 text-[#17343d]">
+                  Exam PDFs
+                </span>
+
+                <span className="rounded-full border border-slate-200 bg-white px-5 py-1 text-xs font-medium leading-5 text-[#17343d]">
+                  Study and revision
+                </span>
+
+              </div>
+            </div>
+          </Link>
+
+        </main>
+
+        {/* Information Banner */}
+        <section className="mt-7 flex items-start gap-3 rounded-[20px] border border-sky-300 bg-sky-50/80 px-5 py-4">
+
+          <Info
+            size={19}
+            className="mt-0.5 shrink-0 text-sky-700"
+            strokeWidth={1.8}
+          />
+
+          <div>
+            <h3 className="text-sm font-semibold leading-5 text-[#17343d]">
+              Study documents only
+            </h3>
+
+            <p className="mt-1 text-xs leading-5 text-slate-600 sm:text-sm">
+              These are PDF files to view or download. There are no online tests,
+              timers, or grading.
+            </p>
+          </div>
+
+        </section>
+
       </div>
     </div>
   );

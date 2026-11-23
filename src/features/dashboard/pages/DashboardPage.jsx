@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCourse } from '../../courses/context/CourseContext';
 import {
   Search,
   BookOpen,
@@ -12,18 +11,12 @@ import {
 /**
  * Dashboard Page matching Figma screen/dashboard/first-time-user
  * Features:
- * - Panoramic Hero Banner dynamically switching between Signals and Systems / DSP
- * - 3D fluted slats and "Browse lectures ->"
+ * - Panoramic DSP Hero Banner with 3D fluted slats and "Browse lectures ->"
  * - Floating rounded Search bar
  * - 3 Category Cards: Lectures (dark ink #15313C), Sections (white), Exam Bank (white)
  * - "Continue learning" dashed placeholder state with "Browse lectures ->"
- * 
- * BACKEND DEVELOPERS NOTE:
- * When connecting real backend data, fetch content for the active course:
- * const { data } = await api.get(`/dashboard?course=${courseId}`);
  */
 export const DashboardPage = () => {
-  const { currentCourse } = useCourse();
   const [searchQuery, setSearchQuery] = useState('');
 
   // 18 3D fluted vertical cylindrical ribs for the panoramic hero banner
@@ -91,51 +84,50 @@ export const DashboardPage = () => {
           <div className="absolute inset-y-0 left-0 w-[55%] bg-gradient-to-r from-[#15313C] via-[#15313C]/95 to-transparent z-0" />
         </div>
 
-        {/* Top Text: Department Title in lime matching Figma UI */}
+        {/* Top Text: Department Title in lime */}
         <div className="relative z-10">
           <p className="text-xs sm:text-[13px] font-medium text-[#CCEB74] tracking-wide">
-            {currentCourse.welcomeText}
+            Welcome • Electronics and Communications Engineering
           </p>
         </div>
 
         {/* Content: Course Title, Badges & Instructor */}
-        <div className="relative z-10 mt-5 sm:mt-8">
-          <h1 className="text-2xl sm:text-4xl lg:text-[44px] font-bold text-white tracking-tight leading-[1.1] mb-3 sm:mb-4">
-            {currentCourse.heroLine1}<br />{currentCourse.heroLine2}
+        <div className="relative z-10 mt-6 sm:mt-8">
+          <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-white tracking-tight leading-[1.08] mb-4">
+            Digital Signal<br />Processing
           </h1>
 
-          <div className="flex items-center gap-2 mb-5 sm:mb-6">
+          <div className="flex items-center gap-2 mb-6">
             <span className="inline-flex items-center justify-center px-3.5 py-1 rounded-full text-xs font-medium text-white/95 bg-[#1f424f] border border-white/10 shadow-sm">
-              {currentCourse.badgeText}
+              DSP
             </span>
             <span className="inline-flex items-center justify-center px-3.5 py-1 rounded-full text-xs font-medium text-white/95 bg-[#1f424f] border border-white/10 shadow-sm">
-              {currentCourse.courseCode}
+              ECE 28
             </span>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pt-1">
-            <div>
-              <span className="block text-[11px] font-normal text-[#B5C2C7]">
-                Instructor
-              </span>
-              <span className="block text-sm sm:text-[15px] font-bold text-white mt-0.5">
-                {currentCourse.instructor}
-              </span>
-            </div>
-
-            <Link
-              to="/lectures"
-              className="bg-[#CCEB74] hover:bg-[#bce64f] active:scale-[0.98] text-[#15313C] font-semibold text-xs sm:text-sm py-2.5 px-5 rounded-full inline-flex items-center gap-2 shadow-md transition-all z-20 cursor-pointer self-start sm:self-auto"
-            >
-              <span>Browse lectures</span>
-              <ArrowRight className="w-4 h-4 stroke-[2.25]" />
-            </Link>
+          <div>
+            <span className="block text-[11px] font-normal text-[#B5C2C7]">
+              Instructor
+            </span>
+            <span className="block text-sm sm:text-[15px] font-bold text-white mt-0.5">
+              Dr. Abeer Tawokol
+            </span>
           </div>
         </div>
+
+        {/* Bottom Right Floating Action: Browse lectures -> */}
+        <Link
+          to="/lectures"
+          className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 bg-[#CCEB74] hover:bg-[#bce64f] active:scale-[0.98] text-[#15313C] font-semibold text-xs sm:text-sm py-2.5 px-5 rounded-full inline-flex items-center gap-2 shadow-md transition-all z-20 cursor-pointer"
+        >
+          <span>Browse lectures</span>
+          <ArrowRight className="w-4 h-4 stroke-[2.25]" />
+        </Link>
       </div>
 
       {/* 2. FLOATING SEARCH BAR */}
-      <div className="max-w-2xl mx-auto -mt-6 sm:-mt-8 relative z-20 px-2 sm:px-4">
+      <div className="max-w-2xl mx-auto -mt-6 sm:-mt-8 relative z-20 px-4">
         <div className="bg-white/95 backdrop-blur-md rounded-full shadow-[0_12px_35px_rgba(21,49,60,0.08)] border border-[#EAF0F2] px-5 sm:px-6 py-3 sm:py-3.5 flex items-center gap-3 transition-shadow focus-within:shadow-[0_16px_40px_rgba(21,49,60,0.12)]">
           <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#6B8089] shrink-0" />
           <input

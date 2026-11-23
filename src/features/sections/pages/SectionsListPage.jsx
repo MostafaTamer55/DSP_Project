@@ -1,268 +1,72 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Layers, ArrowRight } from 'lucide-react';
-import { useCourse } from '../../courses/context/CourseContext';
+import Card, { CardBody } from '../../../components/common/Card';
+import Button from '../../../components/common/Button';
+import Badge from '../../../components/common/Badge';
+import { Terminal, Code2, Clock, CheckCircle2, ArrowRight } from 'lucide-react';
 
-/**
- * Mock data for DSP Sections
- */
-export const MOCK_DSP_SECTIONS = [
-  {
-    id: 'd1',
-    number: 'Section 01',
-    title: 'Section title',
-    hasVideo: true,
-    hasPdf: true,
-  },
-  {
-    id: 'd2',
-    number: 'Section 02',
-    title: 'Section title',
-    hasVideo: false,
-    hasPdf: true,
-  },
-  {
-    id: 'd3',
-    number: 'Section 03',
-    title: 'Section title',
-    hasVideo: true,
-    hasPdf: true,
-  },
-  {
-    id: 'd4',
-    number: 'Section 04',
-    title: 'Section title',
-    hasVideo: true,
-    hasPdf: true,
-  },
-  {
-    id: 'd5',
-    number: 'Section 05',
-    title: 'Section title',
-    hasVideo: false,
-    hasPdf: true,
-  },
-  {
-    id: 'd6',
-    number: 'Section 06',
-    title: 'Section title',
-    hasVideo: false,
-    hasPdf: true,
-  },
+const mockSections = [
+  { id: '1', num: '01', title: 'Lab 1: Python NumPy & Scipy for Discrete Signals', env: 'Python / Jupyter', duration: '1h 30m', solved: true, difficulty: 'Beginner' },
+  { id: '2', num: '02', title: 'Lab 2: Sampling Continuous Signals & Aliasing Verification', env: 'MATLAB / Python', duration: '2h', solved: true, difficulty: 'Intermediate' },
+  { id: '3', num: '03', title: 'Lab 3: Z-Transform Analysis & Frequency Response in Pole-Zero Plane', env: 'Python Scipy.signal', duration: '2h', solved: true, difficulty: 'Intermediate' },
+  { id: '4', num: '04', title: 'Lab 4: Fast Fourier Transform (FFT) Benchmarking & Spectral Leakage', env: 'Python / NumPy', duration: '1h 45m', solved: false, difficulty: 'Advanced' },
+  { id: '5', num: '05', title: 'Lab 5: FIR Filter Design via Windowing (Hamming & Blackman)', env: 'MATLAB fdatool', duration: '2h 15m', solved: false, difficulty: 'Advanced' },
+  { id: '6', num: '06', title: 'Lab 6: Real-time Audio Filtering & IIR Chebyshev Design', env: 'Python PyAudio', duration: '2h 30m', solved: false, difficulty: 'Advanced' },
 ];
 
-/**
- * Mock data for Signals and Systems Sections
- * BACKEND TEAM NOTE: Replace with API call e.g. api.get('/sections?course=signals')
- */
-export const MOCK_SIGNALS_SECTIONS = [
-  {
-    id: 's1',
-    number: 'Section 01',
-    title: 'Section title',
-    hasVideo: true,
-    hasPdf: true,
-  },
-  {
-    id: 's2',
-    number: 'Section 02',
-    title: 'Section title',
-    hasVideo: false,
-    hasPdf: true,
-  },
-  {
-    id: 's3',
-    number: 'Section 03',
-    title: 'Section title',
-    hasVideo: true,
-    hasPdf: true,
-  },
-  {
-    id: 's4',
-    number: 'Section 04',
-    title: 'Section title',
-    hasVideo: true,
-    hasPdf: true,
-  },
-  {
-    id: 's5',
-    number: 'Section 05',
-    title: 'Section title',
-    hasVideo: false,
-    hasPdf: true,
-  },
-  {
-    id: 's6',
-    number: 'Section 06',
-    title: 'Section title',
-    hasVideo: false,
-    hasPdf: true,
-  },
-];
-
-export const MOCK_SECTIONS = MOCK_DSP_SECTIONS;
-
-/**
- * SectionsListPage Component
- * Matches the user screenshot:
- * - Title: "Sections"
- * - Subtitle: "Practical section PDFs, with a video link on some."
- * - Top-right badge: "● Sample placeholders"
- * - Search bar with placeholder "Search sections.."
- * - Filter pills: "All" | "With video link"
- * - 3-column grid of section cards with Layers icon, Section number, Section title, and badges
- */
 export const SectionsListPage = () => {
-  const { courseId } = useCourse();
-  const [search, setSearch] = useState('');
-  const [activeFilter, setActiveFilter] = useState('All'); // 'All' | 'With video link'
-
-  const sectionsData = courseId === 'signals' ? MOCK_SIGNALS_SECTIONS : MOCK_DSP_SECTIONS;
-
-  const filteredSections = sectionsData.filter((sec) => {
-    const query = search.toLowerCase().trim();
-    const matchesSearch =
-      sec.number.toLowerCase().includes(query) ||
-      sec.title.toLowerCase().includes(query);
-
-    if (!matchesSearch) return false;
-
-    if (activeFilter === 'With video link') {
-      return sec.hasVideo;
-    }
-
-    return true;
-  });
-
   return (
-    <div className="space-y-6 sm:space-y-7 pb-12 select-none">
-      {/* 1. PAGE HEADER */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pt-1">
-        <div>
-          <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#15313C] tracking-tight">
-            Sections
-          </h1>
-          <p className="text-xs sm:text-sm text-[#6B8089] mt-1.5 leading-relaxed">
-            Practical section PDFs, with a video link on some.
-          </p>
+    <div className="space-y-6">
+      {/* Dev & Figma Scope Banner */}
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-brand-50/70 border border-brand-200/60 rounded-xl text-xs text-brand-900">
+        <div className="flex items-center gap-2">
+          <Badge variant="brand" size="sm">Figma 07 Sections</Badge>
+          <span className="font-medium">Assigned to: Developer 3 (Lectures & Sections)</span>
         </div>
-
-        {/* Top Right Sample Placeholders Badge */}
-        <div className="inline-flex items-center gap-1.5 text-xs text-[#6B8089] font-medium self-start sm:self-center px-3.5 py-1 rounded-full bg-[#EAF0F2]/60 border border-[#D7E0E3]/70">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#15313C]" />
-          <span>Sample placeholders</span>
-        </div>
+        <span className="text-brand-700 text-[11px]">Route: <code className="bg-white px-1.5 py-0.5 rounded border border-brand-200">/sections</code></span>
       </div>
 
-      {/* 2. TOOLBAR: SEARCH & FILTER TABS */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-        {/* Left: Rounded Search Input */}
-        <div className="relative w-full sm:w-72">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6B8089]">
-            <Search className="w-4 h-4" />
-          </div>
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search sections.."
-            className="w-full pl-10 pr-4 py-2 sm:py-2.5 rounded-full border border-[#D7E0E3] bg-white text-xs sm:text-sm text-[#15313C] placeholder:text-[#6B8089] outline-none focus:border-[#15313C] shadow-xs transition-colors"
-          />
-        </div>
-
-        {/* Right: Filter Buttons (All, With video link) */}
-        <div className="inline-flex items-center rounded-full bg-white border border-[#D7E0E3] p-1 shadow-xs self-start sm:self-center">
-          {[
-            { id: 'All', label: 'All' },
-            { id: 'With video link', label: 'With video link' },
-          ].map((filter) => {
-            const isActive = activeFilter === filter.id;
-            return (
-              <button
-                key={filter.id}
-                type="button"
-                onClick={() => setActiveFilter(filter.id)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                  isActive
-                    ? 'bg-[#CCEB74] text-[#15313C] shadow-xs'
-                    : 'text-[#6B8089] hover:text-[#15313C]'
-                }`}
-              >
-                {filter.label}
-              </button>
-            );
-          })}
-        </div>
+      <div>
+        <h2 className="text-xl font-bold text-slate-900">Practical Sections & Labs</h2>
+        <p className="text-xs text-slate-500 mt-1">Hands-on recitations, simulation starter code, and algorithm implementations</p>
       </div>
 
-      {/* 3. SECTIONS GRID (3 Columns) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 pt-1">
-        {filteredSections.map((sec) => (
-          <Link
-            key={sec.id}
-            to={`/sections/${sec.id}`}
-            className="bg-white rounded-[24px] sm:rounded-[26px] p-6 border border-[#EAF0F2] shadow-[0_10px_30px_rgba(21,49,60,0.035)] hover:shadow-[0_16px_40px_rgba(21,49,60,0.065)] transition-all flex flex-col justify-between min-h-[175px] sm:min-h-[185px] group cursor-pointer text-left no-underline"
-          >
-            {/* Top Row: Layers Icon Box & Circle Arrow Button */}
-            <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-[#F1FBD2] flex items-center justify-center text-[#3D6317]">
-                <Layers className="w-5 h-5 stroke-[1.75]" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {mockSections.map(sec => (
+          <Card key={sec.id} hoverable>
+            <CardBody className="p-5 flex flex-col justify-between h-full space-y-4">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-accent-50 text-accent-700 border border-accent-200">
+                      SEC {sec.num}
+                    </span>
+                    <Badge variant={sec.solved ? 'success' : 'neutral'} size="sm">
+                      {sec.solved ? 'Submitted' : 'Pending'}
+                    </Badge>
+                  </div>
+                  <Badge variant="neutral" size="sm">{sec.difficulty}</Badge>
+                </div>
+                <h3 className="text-base font-bold text-slate-900">{sec.title}</h3>
+                <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5 font-mono">
+                  <Terminal className="w-3.5 h-3.5 text-brand-600" /> {sec.env}
+                </p>
               </div>
-              <div
-                className="w-9 h-9 rounded-full border border-[#D7E0E3] text-[#15313C] group-hover:bg-slate-50 flex items-center justify-center transition-transform group-hover:scale-105"
-                title={`Open ${sec.number}`}
-              >
-                <ArrowRight className="w-4 h-4 stroke-[2]" />
+
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-xs text-slate-400 flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5" /> {sec.duration}
+                </span>
+                <Link to={`/sections/${sec.id}`}>
+                  <Button variant="secondary" size="sm" icon={ArrowRight} iconPosition="right">
+                    Open Lab
+                  </Button>
+                </Link>
               </div>
-            </div>
-
-            {/* Middle: Section Number & Title */}
-            <div className="mt-3 mb-4">
-              <p className="text-xs font-semibold text-[#6B8089] tracking-wide mb-1">
-                {sec.number}
-              </p>
-              <h3 className="text-xl font-bold text-[#15313C] tracking-tight">
-                {sec.title}
-              </h3>
-            </div>
-
-            {/* Bottom Row: Badges (Video link, PDF) */}
-            <div className="flex items-center gap-2">
-              {sec.hasVideo && (
-                <span className="px-3 py-0.5 rounded-full text-xs font-medium bg-[#F5F8F9] border border-[#D7E0E3] text-[#3A5560]">
-                  Video link
-                </span>
-              )}
-              {sec.hasPdf && (
-                <span className="px-3 py-0.5 rounded-full text-xs font-medium bg-[#F5F8F9] border border-[#D7E0E3] text-[#3A5560]">
-                  PDF
-                </span>
-              )}
-            </div>
-          </Link>
+            </CardBody>
+          </Card>
         ))}
       </div>
-
-      {/* Empty State if Search yields no results */}
-      {filteredSections.length === 0 && (
-        <div className="bg-white/80 rounded-[24px] border border-dashed border-[#B5C2C7] p-10 text-center">
-          <Layers className="w-8 h-8 text-[#6B8089] mx-auto mb-2 stroke-[1.5]" />
-          <p className="text-sm font-semibold text-[#15313C]">No sections found</p>
-          <p className="text-xs text-[#6B8089] mt-1">
-            Try adjusting your search query or switching the filter.
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              setSearch('');
-              setActiveFilter('All');
-            }}
-            className="mt-4 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#15313C] text-white"
-          >
-            Reset Filters
-          </button>
-        </div>
-      )}
     </div>
   );
 };

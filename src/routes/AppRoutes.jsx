@@ -28,18 +28,21 @@ import LecturePdfPage from '../features/lectures/pages/LecturePdfPage';
 // Sections (Figma 07)
 import SectionsListPage from '../features/sections/pages/SectionsListPage';
 import SectionDetailPage from '../features/sections/pages/SectionDetailPage';
-import SectionPdfPage from '../features/sections/pages/SectionPdfPage';
-import SectionVideoPage from '../features/sections/pages/SectionVideoPage';
 
 // Exam Bank (Figma 08)
 import ExamBankPage from '../features/exams/pages/ExamBankPage';
+import QuestionsByLecturePage from '../features/exams/pages/QuestionsByLecturePage';
+import QuestionPdfPage from '../features/exams/pages/QuestionPdfPage';
+import PastExamsPage from '../features/exams/pages/PastExamsPage';
+import PastExamPdfPage from '../features/exams/pages/PastExamPdfPage';
 import ExamRunnerPage from '../features/exams/pages/ExamRunnerPage';
 import ExamResultsPage from '../features/exams/pages/ExamResultsPage';
 
 // Progress (Figma 09)
 import ProgressPage from '../features/progress/pages/ProgressPage';
 
-// Settings (Figma 10)
+// Profile & Settings (Figma 10)
+import ProfilePage from '../features/settings/pages/ProfilePage';
 import SettingsPage from '../features/settings/pages/SettingsPage';
 
 // 404
@@ -65,7 +68,7 @@ export const AppRoutes = () => {
         {/* Main Application Layout (Figma Pages 05–10) */}
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
-          
+
           {/* Lectures */}
           <Route path="/lectures" element={<LecturesListPage />} />
           <Route path="/lectures/:lectureId" element={<LecturePlayerPage />} />
@@ -75,22 +78,43 @@ export const AppRoutes = () => {
           {/* Practical Sections */}
           <Route path="/sections" element={<SectionsListPage />} />
           <Route path="/sections/:sectionId" element={<SectionDetailPage />} />
-          <Route path="/sections/:sectionId/pdf" element={<SectionPdfPage />} />
-          <Route path="/sections/:sectionId/video" element={<SectionVideoPage />} />
 
           {/* Exam Bank & Review */}
           <Route path="/exams" element={<ExamBankPage />} />
-          <Route path="/exams/:examId/results" element={<ExamResultsPage />} />
+
+          <Route
+            path="/exams/questions"
+            element={<QuestionsByLecturePage />}
+          />
+
+          <Route
+            path="/exams/questions/:lectureId/:fileId"
+            element={<QuestionPdfPage />}
+          />
+
+          <Route
+            path="/exams/past-exams"
+            element={<PastExamsPage />}
+          />
+
+          <Route
+            path="/exams/past-exams/:examId"
+            element={<PastExamPdfPage />}
+          />
+
+          <Route
+            path="/exams/:examId/results"
+            element={<ExamResultsPage />}
+          />
+
 
           {/* Progress & Analytics */}
           <Route path="/progress" element={<ProgressPage />} />
-          <Route path="/progress/sections" element={<Navigate to="/progress?view=sections" replace />} />
-          <Route path="/progress/lectures" element={<Navigate to="/progress?view=lectures" replace />} />
-          <Route path="/progress/exams" element={<Navigate to="/progress?view=exams" replace />} />
-          <Route path="/progress/quiz-retake" element={<Navigate to="/progress?view=quiz-retake" replace />} />
 
           {/* Profile & Settings */}
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/settings/change-password" element={<SettingsPage />} />
         </Route>
 
         {/* Distraction-Free Exam Runner (Figma Page 08 Full-Screen Assessment) */}

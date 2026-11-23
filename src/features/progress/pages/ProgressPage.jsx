@@ -1,151 +1,82 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import ProgressSummary from '../components/ProgressSummary';
-import LecturesProgressBreakdown from '../components/LecturesProgressBreakdown';
-import SectionsProgressBreakdown from '../components/SectionsProgressBreakdown';
-import ExamsProgressBreakdown from '../components/ExamsProgressBreakdown';
-import QuizRetakePreparation from '../components/QuizRetakePreparation';
+import React from 'react';
+import Card, { CardBody, CardHeader, CardTitle } from '../../../components/common/Card';
+import Badge from '../../../components/common/Badge';
+import ProgressBar from '../../../components/common/ProgressBar';
+import { TrendingUp, Award, Calendar, CheckCircle, BarChart3, Clock } from 'lucide-react';
 
-/**
- * Dedicated Progress Page (/progress) supporting 5 views:
- * 1. Overview (الprogress الكل: Overview Analytics + 3 columns: Lectures, Sections, Exams)
- * 2. Lectures Progress Breakdown (المحاضرات)
- * 3. Practical Sections & Topics Breakdown (السكاشن)
- * 4. Exams & Quizzes Performance (الامتحانات والكويزات - Image 1)
- * 5. Prepare for your retake (التحضير لإعادة الكويز - Image 2)
- */
 export const ProgressPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const tabParam = searchParams.get('tab') || searchParams.get('view');
-
-  const [currentView, setCurrentView] = useState(() => {
-    if (tabParam === 'sections') return 'sections_breakdown';
-    if (tabParam === 'lectures') return 'lectures_breakdown';
-    if (tabParam === 'exams') return 'exams_breakdown';
-    if (tabParam === 'quiz-retake' || tabParam === 'retake') return 'quiz_retake_prep';
-    return 'overview';
-  });
-
-  const [selectedQuiz, setSelectedQuiz] = useState(null);
-
-  // Sync state if URL query param changes
-  useEffect(() => {
-    if (tabParam === 'sections') {
-      setCurrentView('sections_breakdown');
-    } else if (tabParam === 'lectures') {
-      setCurrentView('lectures_breakdown');
-    } else if (tabParam === 'exams') {
-      setCurrentView('exams_breakdown');
-    } else if (tabParam === 'quiz-retake' || tabParam === 'retake') {
-      setCurrentView('quiz_retake_prep');
-    } else if (!tabParam) {
-      setCurrentView('overview');
-    }
-  }, [tabParam]);
-
-  const handleBackToOverview = () => {
-    setCurrentView('overview');
-    setSearchParams({});
-  };
-
-  const handleSelectLectures = () => {
-    setCurrentView('lectures_breakdown');
-    setSearchParams({ view: 'lectures' });
-  };
-
-  const handleSelectSections = () => {
-    setCurrentView('sections_breakdown');
-    setSearchParams({ view: 'sections' });
-  };
-
-  const handleSelectExams = (exam) => {
-    if (exam && (exam.status === 'needs_retake' || exam.id === 'q3')) {
-      setSelectedQuiz(exam);
-      setCurrentView('quiz_retake_prep');
-      setSearchParams({ view: 'quiz-retake' });
-    } else {
-      setCurrentView('exams_breakdown');
-      setSearchParams({ view: 'exams' });
-    }
-  };
-
-  const handleSelectQuizFromTable = (quiz) => {
-    setSelectedQuiz(quiz);
-    setCurrentView('quiz_retake_prep');
-    setSearchParams({ view: 'quiz-retake' });
-  };
-
-  const handleBackToAssessments = () => {
-    setCurrentView('exams_breakdown');
-    setSearchParams({ view: 'exams' });
-  };
-
-  const handleOpenSection = (sectionId) => {
-    setCurrentView('sections_breakdown');
-    setSearchParams({ view: 'sections' });
-  };
-
   return (
-    <div className="space-y-6 sm:space-y-7 pb-12 select-none">
-      {/* TOP VIEW SWITCHER TABS: All Progress (الكل) | Lectures | Sections | Exams */}
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="inline-flex items-center rounded-full bg-white border border-[#D7E0E3] p-1 sm:p-1.5 shadow-xs overflow-x-auto max-w-full">
-          {[
-            { id: 'overview', label: 'All Progress (الكل)' },
-            { id: 'lectures_breakdown', label: 'Lectures (المحاضرات)' },
-            { id: 'sections_breakdown', label: 'Sections (السكاشن)' },
-            { id: 'exams_breakdown', label: 'Exams & Quizzes (الامتحانات والكويزات)' },
-          ].map((tab) => {
-            const isActive =
-              currentView === tab.id ||
-              (tab.id === 'exams_breakdown' && currentView === 'quiz_retake_prep');
-
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => {
-                  if (tab.id === 'overview') handleBackToOverview();
-                  else if (tab.id === 'lectures_breakdown') handleSelectLectures();
-                  else if (tab.id === 'sections_breakdown') handleSelectSections();
-                  else if (tab.id === 'exams_breakdown') handleSelectExams();
-                }}
-                className={`px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                  isActive
-                    ? 'bg-[#15313C] text-[#CCEB74] shadow-xs'
-                    : 'text-[#6B8089] hover:text-[#15313C] hover:bg-[#F5F8F9]'
-                }`}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
+    <div className="space-y-6">
+      {/* Dev & Figma Scope Banner */}
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-brand-50/70 border border-brand-200/60 rounded-xl text-xs text-brand-900">
+        <div className="flex items-center gap-2">
+          <Badge variant="brand" size="sm">Figma 09 Progress</Badge>
+          <span className="font-medium">Assigned to: Developer 2 (Dashboard & Progress)</span>
         </div>
+        <span className="text-brand-700 text-[11px]">Route: <code className="bg-white px-1.5 py-0.5 rounded border border-brand-200">/progress</code></span>
       </div>
 
-      {/* VIEW CONTENT */}
-      {currentView === 'lectures_breakdown' ? (
-        <LecturesProgressBreakdown onBack={handleBackToOverview} />
-      ) : currentView === 'sections_breakdown' ? (
-        <SectionsProgressBreakdown onBack={handleBackToOverview} />
-      ) : currentView === 'exams_breakdown' ? (
-        <ExamsProgressBreakdown
-          onBack={handleBackToOverview}
-          onSelectQuiz={handleSelectQuizFromTable}
-        />
-      ) : currentView === 'quiz_retake_prep' ? (
-        <QuizRetakePreparation
-          quizData={selectedQuiz}
-          onBackToAssessments={handleBackToAssessments}
-          onOpenSection={handleOpenSection}
-        />
-      ) : (
-        <ProgressSummary
-          onSelectLectures={handleSelectLectures}
-          onSelectSections={handleSelectSections}
-          onSelectExams={handleSelectExams}
-        />
-      )}
+      <div>
+        <h2 className="text-xl font-bold text-slate-900">Learning Progress & Analytics</h2>
+        <p className="text-xs text-slate-500 mt-1">Track your topic mastery, study velocity, and exam score trajectories</p>
+      </div>
+
+      {/* Overview Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card>
+          <CardBody className="p-5">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Overall Syllabus</span>
+            <p className="text-2xl font-bold text-slate-900 mt-1">68.5%</p>
+            <ProgressBar value={68.5} max={100} color="brand" className="mt-3" />
+            <p className="text-xs text-slate-400 mt-2">18 of 24 modules mastered</p>
+          </CardBody>
+        </Card>
+        <Card>
+          <CardBody className="p-5">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Time Invested</span>
+            <p className="text-2xl font-bold text-slate-900 mt-1">34h 15m</p>
+            <ProgressBar value={80} max={100} color="accent" className="mt-3" />
+            <p className="text-xs text-slate-400 mt-2">Target: 40h per semester</p>
+          </CardBody>
+        </Card>
+        <Card>
+          <CardBody className="p-5">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Assessment Average</span>
+            <p className="text-2xl font-bold text-emerald-600 mt-1">92.4%</p>
+            <ProgressBar value={92.4} max={100} color="emerald" className="mt-3" />
+            <p className="text-xs text-slate-400 mt-2">4 Quizzes & 1 Midterm</p>
+          </CardBody>
+        </Card>
+      </div>
+
+      {/* Topic Mastery Breakdown */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Topic Mastery Matrix</CardTitle>
+        </CardHeader>
+        <CardBody className="p-6 space-y-4">
+          {[
+            { topic: 'Discrete-Time Signals & LTI Systems', score: 95, status: 'Mastered' },
+            { topic: 'Z-Transform & Pole-Zero Stability', score: 90, status: 'Mastered' },
+            { topic: 'Discrete Fourier Transform (DFT) & DTFT', score: 82, status: 'Proficient' },
+            { topic: 'Fast Fourier Transform (FFT) Algorithms', score: 70, status: 'In Progress' },
+            { topic: 'FIR & IIR Digital Filter Design', score: 45, status: 'Learning' },
+          ].map((item, idx) => (
+            <div key={idx} className="space-y-1.5">
+              <div className="flex justify-between items-center text-xs">
+                <span className="font-semibold text-slate-800">{item.topic}</span>
+                <div className="flex items-center gap-2">
+                  <Badge variant={item.score > 85 ? 'success' : item.score > 60 ? 'brand' : 'warning'} size="sm">
+                    {item.status}
+                  </Badge>
+                  <span className="font-bold text-slate-900">{item.score}%</span>
+                </div>
+              </div>
+              <ProgressBar value={item.score} max={100} color={item.score > 85 ? 'emerald' : 'brand'} size="sm" />
+            </div>
+          ))}
+        </CardBody>
+      </Card>
     </div>
   );
 };
