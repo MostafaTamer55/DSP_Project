@@ -15,7 +15,7 @@ export const COURSES = {
     heroLine2: 'Systems',
     department: 'Electronics and Communications Engineering',
     courseCode: 'ECE 28',
-    badgeText: 'DSP', // Matches the Figma screenshot badge
+    badgeText: 'Signals',
     instructor: 'Dr. Abeer Tawakol',
     welcomeText: 'Welcome - Electronics and Communications Engineering',
     description: 'Continuous and Discrete-Time Signals, Linear Time-Invariant Systems, Convolution, Fourier Transform, and Laplace Transform.',
@@ -24,7 +24,7 @@ export const COURSES = {
     id: 'dsp',
     label: 'DSP',
     code: 'DSP',
-    title: 'Digital Signal Processing',
+    title: 'Digital Signal Processing (DSP)',
     heroLine1: 'Digital Signal',
     heroLine2: 'Processing',
     department: 'Electronics and Communications Engineering',

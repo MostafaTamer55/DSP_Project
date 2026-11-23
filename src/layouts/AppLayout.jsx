@@ -39,7 +39,10 @@ export const AppLayout = () => {
 
   const handleCourseSelect = (id) => {
     selectCourse(id);
-    navigate('/dashboard');
+    // If inside a specific lesson player/viewer, navigate to dashboard to reset view context
+    if (location.pathname.includes('/video/') || location.pathname.includes('/pdf/')) {
+      navigate('/dashboard');
+    }
   };
 
   const handleConfirmLogout = () => {

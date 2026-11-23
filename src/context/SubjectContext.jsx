@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext } from 'react';
+import { useCourse } from '../features/courses/context/CourseContext';
 
 const SubjectContext = createContext(null);
 
@@ -24,26 +25,15 @@ export const SUBJECT_CONFIGS = {
 };
 
 export const SubjectProvider = ({ children }) => {
-  const [activeSubject, setActiveSubject] = useState(() => {
-    try {
-      const stored = localStorage.getItem('dsp_active_subject');
-      if (stored === 'Signals' || stored === 'DSP') {
-        return stored;
-      }
-    } catch {
-      // ignore
-    }
-    return 'DSP';
-  });
+  const { courseId, selectCourse } = useCourse();
+
+  const activeSubject = courseId === 'signals' ? 'Signals' : 'DSP';
 
   const setSubject = (subject) => {
-    if (subject === 'DSP' || subject === 'Signals') {
-      setActiveSubject(subject);
-      try {
-        localStorage.setItem('dsp_active_subject', subject);
-      } catch {
-        // ignore
-      }
+    if (subject === 'DSP') {
+      selectCourse('dsp');
+    } else if (subject === 'Signals') {
+      selectCourse('signals');
     }
   };
 

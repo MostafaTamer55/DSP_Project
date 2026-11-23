@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ExternalLink } from 'lucide-react';
+import { Sparkles, ExternalLink, Bot } from 'lucide-react';
+import aiAgentPng from '../../assets/ai-agent.png';
 
 // Default fallback link to the user's custom DSP & Signals Gemini Gem
 export const DEFAULT_GEMINI_GEM_URL =
@@ -8,6 +9,8 @@ export const DEFAULT_GEMINI_GEM_URL =
 
 export const AIAgentWidget = () => {
   const [showTooltip, setShowTooltip] = useState(true);
+  const [imgSrc, setImgSrc] = useState(aiAgentPng || '/ai-agent.png');
+  const [imgError, setImgError] = useState(false);
   const gemUrl =
     (typeof window !== 'undefined' && localStorage.getItem('dsp_gemini_gem_url')) ||
     DEFAULT_GEMINI_GEM_URL;
@@ -63,13 +66,26 @@ export const AIAgentWidget = () => {
         className="relative group p-1 bg-gradient-to-tr from-[#15313C] to-[#204958] rounded-2xl sm:rounded-3xl shadow-[0_10px_30px_rgba(21,49,60,0.3)] border-2 border-[#CCEB74] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer"
         title="فتح محادثة المساعد الذكي (Gemini Gem)"
       >
-        {/* Avatar Image */}
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl overflow-hidden bg-[#15313C]">
-          <img
-            src="/ai-agent.png"
-            alt="AI Assistant"
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-          />
+        {/* Avatar Image with Resilient Fallback */}
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl overflow-hidden bg-[#15313C] flex items-center justify-center">
+          {!imgError ? (
+            <img
+              src={imgSrc}
+              alt="AI Assistant"
+              onError={() => {
+                if (imgSrc !== '/ai-agent.png') {
+                  setImgSrc('/ai-agent.png');
+                } else {
+                  setImgError(true);
+                }
+              }}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-tr from-[#15313C] to-[#204958] text-[#CCEB74]">
+              <Bot className="w-7 h-7 sm:w-8 sm:h-8" />
+            </div>
+          )}
         </div>
 
         {/* Glowing Online Status Indicator */}

@@ -144,3 +144,7 @@
 *.stl                filter=lfs diff=lfs merge=lfs -text
 *.nc                 filter=lfs diff=lfs merge=lfs -text
 *.mat                filter=lfs diff=lfs merge=lfs -text
+
+# Frontend Web Assets - store directly as git blobs without LFS
+public/** -filter -diff -merge
+src/assets/** -filter -diff -merge

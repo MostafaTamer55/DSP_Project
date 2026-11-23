@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Sliders, Pencil, Check, X, GraduationCap, Copy, CheckCheck } from 'lucide-react';
 import { useAuth } from '../../auth/context/AuthContext';
 import { useSubject } from '../../../context/SubjectContext';
+import { useCourse } from '../../courses/context/CourseContext';
 
 /**
  * Standard Egyptian Engineering faculty academic years and typical cohort numbers
@@ -31,6 +32,7 @@ const COHORT_QUICK_CHIPS = ['ECE 28', 'ECE 27', 'ECE 29', 'CCE 28', 'CCE 27'];
  */
 export const ProfilePage = () => {
   const { currentUser, updateCohort } = useAuth();
+  const { courseId, currentCourse } = useCourse();
   const { activeConfig, activeSubject } = useSubject();
   const navigate = useNavigate();
 
@@ -122,12 +124,13 @@ export const ProfilePage = () => {
   const displayName = (currentUser?.name && String(currentUser.name).trim()) || 'Student name';
   const displayEmail = (currentUser?.email && String(currentUser.email).trim()) || 'name@example.com';
   const displayInitials = getInitials(displayName);
-  const displayInstructor = activeConfig?.instructor || 'Dr. Abeer Tawakol';
+  const isSignals = (courseId === 'signals') || (activeSubject === 'Signals');
+  const courseCode = isSignals ? 'Signals' : 'DSP';
+  const displayInstructor = currentCourse?.instructor || activeConfig?.instructor || 'Dr. Abeer Tawakol';
 
-  const courseTitle =
-    activeSubject === 'Signals'
-      ? 'Signals and Systems'
-      : 'Digital Signal Processing (DSP)';
+  const courseTitle = isSignals
+    ? 'Signals and Systems'
+    : 'Digital Signal Processing (DSP)';
 
   const handleOpenEdit = () => {
     setTempCohort(cohort);
@@ -258,7 +261,7 @@ export const ProfilePage = () => {
             {/* Subject, الفرقة & Cohort Badges */}
             <div className="flex flex-wrap items-center gap-2 mb-6 sm:mb-8">
               <span className="px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold text-white/95 bg-[#1F414D] border border-[#2D5463] shadow-xs">
-                {activeSubject || 'DSP'}
+                {courseCode}
               </span>
               <span
                 onClick={handleOpenEdit}
