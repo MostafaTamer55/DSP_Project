@@ -46,7 +46,7 @@ export const SectionVideoPage = () => {
 
   // Previous and Next section IDs
   const prevId = currentId > 1 ? currentId - 1 : null;
-  const nextId = currentId < 6 ? currentId + 1 : null;
+  const nextId = currentId < 8 ? currentId + 1 : null;
   const prevNumberStr = prevId ? `Section ${prevId.toString().padStart(2, '0')}` : null;
   const nextNumberStr = nextId ? `Section ${nextId.toString().padStart(2, '0')}` : null;
 

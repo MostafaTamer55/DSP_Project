@@ -19,6 +19,7 @@ export const COURSES = {
     instructor: 'Dr. Abeer Tawakol',
     welcomeText: 'Welcome - Electronics and Communications Engineering',
     description: 'Continuous and Discrete-Time Signals, Linear Time-Invariant Systems, Convolution, Fourier Transform, and Laplace Transform.',
+    driveFolderUrl: 'https://drive.google.com/drive/folders/1k2W2FViJddcdRIv7tI8PHZcBTzICiI6K',
   },
   dsp: {
     id: 'dsp',
@@ -33,6 +34,7 @@ export const COURSES = {
     instructor: 'Dr. Abeer Tawakol',
     welcomeText: 'Welcome - Electronics and Communications Engineering',
     description: 'Discrete-Time Signals, Z-Transform, Discrete Fourier Transform (DFT), Fast Fourier Transform (FFT), and Digital Filter Design.',
+    driveFolderUrl: 'https://drive.google.com/drive/folders/1_ep2RWd0YsI_2s9-D0TGlXg2rufk11VI',
   },
 };
 

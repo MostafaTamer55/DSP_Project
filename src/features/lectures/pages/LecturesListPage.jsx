@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, BookOpen, ArrowRight } from 'lucide-react';
-
-import { MOCK_LECTURES } from '../data/mockLectures';
+import { useCourse } from '../../courses/context/CourseContext';
+import { getLecturesByCourse } from '../data/mockLectures';
 
 /**
  * Lectures List Page matching Figma screen/lectures/list/default
@@ -12,10 +12,11 @@ import { MOCK_LECTURES } from '../data/mockLectures';
  * - 3-column lecture card grid with book icons, lecture numbers, titles, and media badges
  */
 export const LecturesListPage = () => {
+  const { courseId } = useCourse();
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('All'); // 'All' | 'Video' | 'PDF'
 
-  const lecturesData = MOCK_LECTURES;
+  const lecturesData = getLecturesByCourse(courseId);
 
   const filteredLectures = lecturesData.filter((lec) => {
     const matchesSearch =
