@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Bot, Sparkles, ExternalLink, X, MessageSquare, ArrowRight, BookOpen } from 'lucide-react';
 import { useCourse } from '../../features/courses/context/CourseContext';
 
-// Default fallback link (can be replaced by user or env variable)
+// Default fallback link to the user's custom DSP & Signals Gemini Gem
 export const DEFAULT_GEMINI_GEM_URL =
-  import.meta.env.VITE_GEMINI_GEM_URL || 'https://gemini.google.com';
+  import.meta.env.VITE_GEMINI_GEM_URL ||
+  'https://gemini.google.com/gem/1kkxqyHvyP2Wc515PsxIUKoHxcoXFK_Ne?usp=sharing';
 
 export const AIAgentWidget = () => {
   const { currentCourse } = useCourse();
@@ -40,7 +41,8 @@ export const AIAgentWidget = () => {
   const handleOpenGemini = (promptText = null) => {
     let targetUrl = gemUrl;
     if (promptText && targetUrl.includes('gemini.google.com')) {
-      targetUrl = `${targetUrl}?text=${encodeURIComponent(promptText)}`;
+      const sep = targetUrl.includes('?') ? '&' : '?';
+      targetUrl = `${targetUrl}${sep}text=${encodeURIComponent(promptText)}`;
     }
     window.open(targetUrl, '_blank', 'noopener,noreferrer');
   };
