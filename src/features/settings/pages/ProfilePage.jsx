@@ -33,7 +33,7 @@ const COHORT_QUICK_CHIPS = ['ECE 28', 'ECE 27', 'ECE 29', 'CCE 28', 'CCE 27'];
 export const ProfilePage = () => {
   const { currentUser, updateCohort } = useAuth();
   const { courseId, currentCourse } = useCourse();
-  const { activeConfig, activeSubject } = useSubject();
+  const { activeConfig } = useSubject();
   const navigate = useNavigate();
 
   // Cohort state with robust localStorage persistence
@@ -124,7 +124,7 @@ export const ProfilePage = () => {
   const displayName = (currentUser?.name && String(currentUser.name).trim()) || 'Student name';
   const displayEmail = (currentUser?.email && String(currentUser.email).trim()) || 'name@example.com';
   const displayInitials = getInitials(displayName);
-  const isSignals = (courseId === 'signals') || (activeSubject === 'Signals');
+  const isSignals = courseId === 'signals';
   const courseCode = isSignals ? 'Signals' : 'DSP';
   const displayInstructor = currentCourse?.instructor || activeConfig?.instructor || 'Dr. Abeer Tawakol';
 

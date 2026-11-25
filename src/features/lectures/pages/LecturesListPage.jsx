@@ -128,13 +128,13 @@ export const LecturesListPage = () => {
 
               {/* Bottom Row: Badges (Video, PDF) */}
               <div className="flex items-center gap-2">
-                {lecture.hasVideo && (
-                  <span className="px-3 py-0.5 rounded-full text-xs font-medium bg-[#F5F8F9] border border-[#D7E0E3] text-[#3A5560]">
+                {lecture.hasVideo && (activeFilter === 'All' || activeFilter === 'Video') && (
+                  <span className={`px-3 py-0.5 rounded-full text-xs font-medium border ${activeFilter === 'Video' ? 'bg-[#EAF7C6] border-[#CCEB74] text-[#15313C] font-semibold' : 'bg-[#F5F8F9] border-[#D7E0E3] text-[#3A5560]'}`}>
                     Video
                   </span>
                 )}
-                {lecture.hasPdf && (
-                  <span className="px-3 py-0.5 rounded-full text-xs font-medium bg-[#F5F8F9] border border-[#D7E0E3] text-[#3A5560]">
+                {lecture.hasPdf && (activeFilter === 'All' || activeFilter === 'PDF') && (
+                  <span className={`px-3 py-0.5 rounded-full text-xs font-medium border ${activeFilter === 'PDF' ? 'bg-[#EAF7C6] border-[#CCEB74] text-[#15313C] font-semibold' : 'bg-[#F5F8F9] border-[#D7E0E3] text-[#3A5560]'}`}>
                     PDF
                   </span>
                 )}
