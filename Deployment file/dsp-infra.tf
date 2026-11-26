@@ -1,13 +1,13 @@
 # =====================================================================
-#  DSP Learning Platform - Full AWS Infrastructure (ملف واحد)
+#  DSP Learning Platform - AWS Infrastructure
 #
-#  اللي بيتعمل:
-#   VPC  ->  Public Subnet  ->  Internet Gateway  ->  Route Table
-#   Security Group  ->  EC2 (Ubuntu + Nginx + React build)  ->  Elastic IP
-#   (اختياري) IAM Role للدخول بـ Session Manager من غير SSH
+#  Resources created by this configuration:
+#   VPC -> Public Subnet -> Internet Gateway -> Route Table
+#   Security Group -> Ubuntu EC2 (Nginx + React build) -> Elastic IP
+#   Optional: IAM Role for connecting through AWS Systems Manager Session Manager
 #
-#  التشغيل:   terraform init   ثم   terraform apply
-#  المسح:     terraform destroy
+#  Deploy: terraform init, then terraform apply
+#  Remove all managed resources: terraform destroy
 # =====================================================================
 
 terraform {
@@ -25,7 +25,7 @@ terraform {
 }
 
 # ---------------------------------------------------------------------
-#  Variables
+#  Input Variables
 # ---------------------------------------------------------------------
 variable "region" {
   type    = string
@@ -49,28 +49,28 @@ variable "public_subnet_cidr" {
 
 variable "instance_type" {
   type    = string
-  default = "t3.micro" # لو الأكونت مش بيقبلها جرّبي t2.micro
+  default = "t3.micro" # Use t2.micro if t3.micro is unavailable for your account.
 }
 
-# سيبيها فاضية = Terraform يعرف الـ IP بتاعك لوحده ويفتح SSH ليه بس
+# Leave empty to detect the current public IP automatically and allow SSH only from that IP.
 variable "my_ip_cidr" {
   type    = string
   default = ""
 }
 
-# اسم Key Pair موجود على AWS لو عايزة SSH، أو سيبيه فاضي
+# Name of an existing AWS EC2 Key Pair. Leave empty if SSH access is not required.
 variable "key_name" {
   type    = string
   default = ""
 }
 
-# true = يعمل IAM Role عشان تدخلي بـ Session Manager (محتاج صلاحيات IAM)
+# Set to true to create an IAM Role for Session Manager access (requires IAM permissions).
 variable "enable_ssm" {
   type    = bool
   default = false
 }
 
-# قيم Supabase: Terraform هيسألك عليهم وقت apply (من بتاع الباك / التيم ليدر)
+# Supabase project URL and public anon key. Provide the values when Terraform prompts during apply.
 variable "supabase_url" {
   type        = string
   description = "Supabase project URL"
@@ -93,7 +93,7 @@ variable "repo_branch" {
 }
 
 # ---------------------------------------------------------------------
-#  Provider + Data
+#  Provider Configuration and Data Sources
 # ---------------------------------------------------------------------
 provider "aws" {
   region = var.region
@@ -106,7 +106,7 @@ provider "aws" {
   }
 }
 
-# اكتشاف الـ IP بتاعك تلقائيًا
+# Detect the current public IP address.
 data "http" "my_ip" {
   url = "https://checkip.amazonaws.com"
 }
@@ -115,15 +115,15 @@ locals {
   ssh_cidr = var.my_ip_cidr != "" ? var.my_ip_cidr : "${chomp(data.http.my_ip.response_body)}/32"
 }
 
-# أول Availability Zone متاحة
+# Retrieve the available Availability Zones in the selected region.
 data "aws_availability_zones" "available" {
   state = "available"
 }
 
-# أحدث Ubuntu 24.04
+# Find the latest Ubuntu 24.04 LTS AMI.
 data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["099720109477"] # Canonical
+  owners      = ["099720109477"] # Canonical (official Ubuntu image publisher).
 
   filter {
     name   = "name"
@@ -132,7 +132,7 @@ data "aws_ami" "ubuntu" {
 }
 
 # ---------------------------------------------------------------------
-#  1) VPC = الشبكة الخاصة بيكم
+#  1) VPC - Isolated virtual network
 # ---------------------------------------------------------------------
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
@@ -143,7 +143,7 @@ resource "aws_vpc" "main" {
 }
 
 # ---------------------------------------------------------------------
-#  2) Public Subnet = جزء من الشبكة بيطلع على الإنترنت
+#  2) Public Subnet - Subnet with a route to the internet
 # ---------------------------------------------------------------------
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
@@ -155,7 +155,7 @@ resource "aws_subnet" "public" {
 }
 
 # ---------------------------------------------------------------------
-#  3) Internet Gateway = بوابة الإنترنت للـ VPC
+#  3) Internet Gateway - Provides internet connectivity for the VPC
 # ---------------------------------------------------------------------
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
@@ -164,7 +164,7 @@ resource "aws_internet_gateway" "igw" {
 }
 
 # ---------------------------------------------------------------------
-#  4) Route Table = بتقول "أي traffic للإنترنت يعدّي من الـ IGW"
+#  4) Route Table - Routes internet-bound traffic through the Internet Gateway
 # ---------------------------------------------------------------------
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
@@ -183,7 +183,7 @@ resource "aws_route_table_association" "public" {
 }
 
 # ---------------------------------------------------------------------
-#  5) Security Group = الفايروول
+#  5) Security Group - Firewall rules for the EC2 instance
 # ---------------------------------------------------------------------
 resource "aws_security_group" "web" {
   name        = "${var.project_name}-web-sg"
@@ -218,7 +218,7 @@ resource "aws_security_group" "web" {
 }
 
 # ---------------------------------------------------------------------
-#  6) (اختياري) IAM Role لـ Session Manager
+#  6) Optional IAM Role - Enables access through Systems Manager Session Manager
 # ---------------------------------------------------------------------
 resource "aws_iam_role" "ssm" {
   count = var.enable_ssm ? 1 : 0
@@ -247,7 +247,7 @@ resource "aws_iam_instance_profile" "ssm" {
 }
 
 # ---------------------------------------------------------------------
-#  7) EC2 = السيرفر + user-data
+#  7) EC2 Instance - Ubuntu server bootstrapped with User Data
 # ---------------------------------------------------------------------
 resource "aws_instance" "web" {
   ami                         = data.aws_ami.ubuntu.id
@@ -261,7 +261,7 @@ resource "aws_instance" "web" {
   user_data_replace_on_change = true
 
   metadata_options {
-    http_tokens   = "required" # IMDSv2
+    http_tokens   = "required" # Require IMDSv2 for instance metadata access.
     http_endpoint = "enabled"
   }
 
@@ -280,42 +280,42 @@ export DEBIAN_FRONTEND=noninteractive
 APP_DIR=/opt/dsp-app
 WEB_ROOT=/var/www/dsp
 
-# --- swap (السيرفر الصغير رامه 1GB والـ build محتاج أكتر) ---
+# Configure swap space to help the build run on a small-memory instance.
 fallocate -l 2G /swapfile
 chmod 600 /swapfile
 mkswap /swapfile
 swapon /swapfile
 echo '/swapfile none swap sw 0 0' >> /etc/fstab
 
-# --- تسطيب الحاجات ---
+# Install system packages and Node.js.
 apt-get update -y
 apt-get install -y git nginx curl ca-certificates gnupg
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 apt-get install -y nodejs
 
-# --- تحميل المشروع ---
+# Clone the application repository and selected branch.
 rm -rf $APP_DIR
 git clone --branch ${var.repo_branch} --depth 1 ${var.repo_url} $APP_DIR
 cd $APP_DIR
 
-# --- ملف env بتاع Supabase (راجعي الأسماء مع .env.example) ---
+# Create the frontend environment file using the variable names from .env.example.
 cat > .env <<'ENVEOF'
 VITE_SUPABASE_URL=${var.supabase_url}
 VITE_SUPABASE_ANON_KEY=${var.supabase_anon_key}
 ENVEOF
 
-# --- build ---
+# Install dependencies and build the React application.
 export NODE_OPTIONS="--max-old-space-size=1024"
 npm ci || npm install
 npm run build
 
-# --- نشر الموقع ---
+# Publish the generated static files to the Nginx web root.
 mkdir -p $WEB_ROOT
 rm -rf $WEB_ROOT/*
 cp -r dist/* $WEB_ROOT/
 chown -R www-data:www-data $WEB_ROOT
 
-# --- إعداد nginx (try_files عشان React Router يشتغل مع refresh) ---
+# Configure Nginx, including the fallback required by React Router on page refresh.
 cat > /etc/nginx/sites-available/dsp <<'NGINX'
 server {
     listen 80 default_server;
@@ -349,7 +349,7 @@ TFUSERDATA
 }
 
 # ---------------------------------------------------------------------
-#  8) Elastic IP = IP ثابت
+#  8) Elastic IP - Static public IP address for the EC2 instance
 # ---------------------------------------------------------------------
 resource "aws_eip" "web" {
   instance = aws_instance.web.id
@@ -361,7 +361,7 @@ resource "aws_eip" "web" {
 }
 
 # ---------------------------------------------------------------------
-#  Outputs
+#  Terraform Outputs
 # ---------------------------------------------------------------------
 output "website_url" {
   value = "http://${aws_eip.web.public_ip}"
