@@ -1,0 +1,44 @@
+# DSP Learning Platform
+# Start with:  docker compose up -d --build
+# Settings are optional; see .env.example. Full guide: DOCKER.md
+
+name: dsp-platform
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Build-time value: rebuild the image after changing it.
+        VITE_GEMINI_GEM_URL: ${VITE_GEMINI_GEM_URL:-}
+    ports:
+      - "${FRONTEND_BIND_ADDRESS:-127.0.0.1}:${FRONTEND_PORT:-8080}:8080"
+    networks:
+      - web
+    restart: unless-stopped
+
+    # The health check is defined in the Dockerfile.
+
+    # Hardening: the container only serves static files.
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+    # Generous limits for a static file server.
+    mem_limit: 256m
+    pids_limit: 256
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  web:
+    driver: bridge

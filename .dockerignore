@@ -1,0 +1,22 @@
+# Allow-list: only what the image build needs is sent to Docker.
+*
+
+!package.json
+!package-lock.json
+!index.html
+!vite.config.js
+!vite.config.ts
+!tsconfig.json
+!tailwind.config.js
+!postcss.config.js
+!public
+!src
+!docker/nginx.conf
+
+# Never include these, even inside the allowed folders.
+**/.env
+**/.env.*
+**/*.local
+**/*.log
+**/node_modules
+**/.DS_Store
